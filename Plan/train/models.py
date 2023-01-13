@@ -7,6 +7,7 @@ User = get_user_model()
 
 TEXT_FIELD_MAX_LENGTH = 5
 MAX_LEN_CASES_SMALL_CALL = 150
+MAX_LEN_CASES_BIG_CALL = 500
 VALIDATE_PARAM=[MinLengthValidator(
             3, message='Должно быть больше двух символов.'
         )]
@@ -48,8 +49,9 @@ class CreatedModel(models.Model):
 class Serial(CreatedModel):
     """Модель серии поезда."""
     author = models.ForeignKey(User,
-                               on_delete=models.SET_NULL,
-                               related_name='serial')
+                               on_delete=models.SET_DEFAULT,
+                               related_name='serial',
+                               default = 'нет',)
     serial = models.TextField(
         verbose_name="Серия", max_length=TEXT_FIELD_MAX_LENGTH,
         validators=VALIDATE_PARAM, unique=True,
@@ -64,8 +66,9 @@ class Serial(CreatedModel):
 class Train(CreatedModel):
     """Модель поезда."""
     author = models.ForeignKey(User,
-                               on_delete=models.SET_NULL,
-                               related_name='train')
+                               on_delete=models.SET_DEFAULT,
+                               related_name='train',
+                               default = 'нет',)
     serial = models.ForeignKey(Serial,
                                verbose_name="Серия",
                                on_delete=models.CASCADE,
@@ -114,8 +117,9 @@ class DoneMaiDate(CreatedModel):
     MAINTENANCE_CHOICES = ALL_MAINTENANCE_CHOICES
     PLACE_CHOICES = ALL_PLACE_CHOICES
     author = models.ForeignKey(User,
-                               on_delete=models.SET_NULL,
-                               related_name='maintenance')
+                               on_delete=models.SET_DEFAULT,
+                               related_name='maintenance',
+                               default = 'нет',)
     train = models.ForeignKey(Train,
                                verbose_name="Поезд",
                                on_delete=models.CASCADE,
@@ -152,8 +156,9 @@ class PlanMaiDate(CreatedModel):
     MAINTENANCE_CHOICES = ALL_MAINTENANCE_CHOICES
     PLACE_CHOICES = ALL_PLACE_CHOICES
     author = models.ForeignKey(User,
-                               on_delete=models.SET_NULL,
-                               related_name='plan')
+                               on_delete=models.SET_DEFAULT,
+                               related_name='plan',
+                               default = 'нет',)
     train = models.ForeignKey(Train,
                                verbose_name="Поезд",
                                on_delete=models.CASCADE,
@@ -186,8 +191,9 @@ class PlanMaiDate(CreatedModel):
 class Cases(CreatedModel):
     """Модель хранения замечаний."""
     author = models.ForeignKey(User,
-                               on_delete=models.SET_NULL,
-                               related_name='cases',)
+                               on_delete=models.SET_DEFAULT,
+                               related_name='cases',
+                               default = 'нет')
     train = models.ForeignKey(Train,
                                verbose_name="Поезд",
                                on_delete=models.CASCADE,
@@ -198,6 +204,7 @@ class Cases(CreatedModel):
         blank=False,
     )
     text = models.CharField(
+        max_length = MAX_LEN_CASES_BIG_CALL,
         verbose_name="Полное описание",
         blank=True,
     )
@@ -206,8 +213,9 @@ class Cases(CreatedModel):
 class Image(models.Model):
     """Модель хранения изображений замечания."""
     author = models.ForeignKey(User,
-                               on_delete=models.SET_NULL,
-                               related_name='image',)
+                               on_delete=models.SET_DEFAULT,
+                               related_name='image',
+                               default = 'нет')
     cases = models.ForeignKey(Cases, 
                               on_delete=models.CASCADE,
                               related_name='image')
