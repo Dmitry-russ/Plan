@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load thumbnail %}
+{% block title %}
+    <h1>Список поездов.</h1><br>
+{% endblock %}
+{% block name %}Список поездов.{% endblock %}
+{% block content %}
+    {% for train in page_obj %}
+        <button type="button" class="btn btn-primary">
+            <a href="{% url 'train:cases_list' train.id %}"> {{ train.serial }}-{{ train.number }}</a>
+        </button>
+        {% if not forloop.last %}
+            <hr>
+        {% endif %}
+    {% endfor %}
+    {% include 'includes/paginator.html' %}
+{% endblock %}
