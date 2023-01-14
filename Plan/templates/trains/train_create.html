@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %} {{ train.serial.serial }}-{{ train.number }}{% endblock %}
+{% block name %}
+
+    <div class="row">
+
+        <!-- <aside class="col-12 col-md-3">
+             <p>
+            <ul class="list-group-item">
+
+                   <li class="list-group-item">{{ case.train.serial.serial }}-{{ case.train.number }}</li>
+                     <p>   Дата создания записи:
+                    {{ case.created|date:"d.m.Y" }}</p>
+                <p>
+                    Создал: {{ case.author }}</p>
+            </ul>
+            </p>
+        </aside> -->
+        <article class="col-12 col-md-9">
+                    <form method="post" enctype="multipart/form-data"
+                              action="{% url 'train:train_create' %}">
+                    {% csrf_token %}
+                  <div class="mb-3">
+                    {{ form.as_p }}
+                  </div>
+
+                    <button type="submit" class="btn btn-light">
+                            Сохранить
+                    </button>
+
+
+                    </form>
+        </article>
+    </div>
+    {% include 'includes/paginator.html' %}
+{% endblock %}

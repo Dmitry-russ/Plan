@@ -1,7 +1,14 @@
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 
 from .forms import CreationForm
+
+
+@login_required
+def author(request):
+    return render(request, 'about/author.html')
 
 
 class SignUp(CreateView):

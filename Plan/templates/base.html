@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-bs-theme="dark">
 {% load static %}
 
 
@@ -14,22 +14,22 @@
 
 {% include 'includes/header.html' %}
 
-<div class="p-3 mb-2 bg-secondary text-white">
+
     <center>
         <h1>{% block title %}{% endblock %}</h1>
     </center>
-</div>
 
-<body class="p-3 mb-2 bg-secondary text-white">
-    <center>
+
+<body class="p-3 mb-2 bg-secondary text-dark">
+
 <main>
-    <div class="container py-5">
+    <div>
         <p>
             {% block name %}{% endblock %}
         </p>
         {% block content %}{% endblock %}
     </div>
 </main>
-</center>
+
 </body>
 {% include 'includes/footer.html' %}

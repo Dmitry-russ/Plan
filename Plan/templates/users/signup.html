@@ -6,7 +6,6 @@
             <div class="card">
                 <div class="card-header">Зарегистрироваться</div>
                 <div class="card-body">
-                    {% load user_filters %}
                     {% if form.errors %}
                         {% for field in form %}
                             {% for error in field.errors %}
@@ -26,7 +25,7 @@
                                     {% if field.field.required %}
                                         <span class="required text-danger">*</span>{% endif %}
                                 </label>
-                                {{ field|addclass:'form-control' }}
+                                {{ field }}
                                 {% if field.help_text %}
                                     <small id="{{ field.id_for_label }}-help"
                                            class="form-text text-muted">{{ field.help_text|safe }}</small>
@@ -34,7 +33,7 @@
                             </div>
                         {% endfor %}
                         <div class="col-md-6 offset-md-4">
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-light">
                                 Зарегистрироваться
                             </button>
                         </div>

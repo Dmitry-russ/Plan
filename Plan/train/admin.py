@@ -9,11 +9,14 @@ class SerialAdmin(admin.ModelAdmin):
     list_filter = ('created',)
     empty_value_display = '-пусто-'
 
+
 class TrainAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'author', 'serial', 'number', 'created', 'mileage', 'mileage_date', 'day_mileage',)
+    list_display = ('pk', 'author', 'serial', 'number',
+                    'created', 'mileage', 'mileage_date', 'day_mileage',)
     search_fields = ('number', 'serial',)
     list_filter = ('created',)
     empty_value_display = '-пусто-'
+
 
 class CasesAdmin(admin.ModelAdmin):
     list_display = ('pk', 'author', 'train', 'name', 'text', 'created')

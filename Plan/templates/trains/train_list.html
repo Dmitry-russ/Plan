@@ -6,15 +6,19 @@
 
 {% block content %}
     {% for train in page_obj %}       
-        <a type="button" class="btn btn-light"
-        href="{% url 'train:cases_list' train.id %}">{{ train.serial.serial }}-{{ train.number }}</a>
+        <a type="button" class="btn btn-outline-light"
+        href="{% url 'train:cases_list' train.id %}">{{ train }}</a>
 
-        <a type="button" class="btn btn-light"
-        href="{% url 'train:cases_list' train.id %}">{{ train.serial.serial }}-{{ train.number }}</a>
+        <a type="button" class="btn btn-outline-light"
+        href="{% url 'train:cases_list' train.id %}"> Количество замечаний: {{ train.cases.count }}</a>
 
         {% if not forloop.last %}
             <hr>
         {% endif %}
     {% endfor %}
+    <hr>
+    <a type="button" class="btn btn-outline-light"
+        href="{% url 'train:train_create' %}">Добавить новый поезд</a>
+        <hr>
     {% include 'includes/paginator.html' %}
 {% endblock %}

@@ -1,12 +1,18 @@
 from django.contrib import admin
-from django.urls import include, path 
-from .views import train_list, cases_list, case_detail
+from django.urls import include, path
+
+from .views import (train_list, cases_list, case_detail,
+                    case_create, train_create, case_delete)
 
 app_name = 'train'
 urlpatterns = [
     path('', train_list, name='train_list'),
     path('train/<int:train_id>/', cases_list, name='cases_list'),
     path('case/<int:case_id>/', case_detail, name='case_detail'),
+    path('create/<int:train_id>/', case_create, name='case_create'),
+    path('create/', train_create, name='train_create'),
+    path('delete/case/<int:case_id>/<int:train_id>/',
+         case_delete, name='case_delete'),
     path('api/', include('api.urls')),
     path('admin/', admin.site.urls),
     # path('group/<slug:slug>/', group_posts, name='group_list'),

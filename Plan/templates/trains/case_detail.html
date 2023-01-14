@@ -1,24 +1,40 @@
 {% extends 'base.html' %}
-{% block title %} {{ case.train.serial.serial }}-{{ case.train.number }}: {{ case.name }}{% endblock %}
 {% block name %}
 
     <div class="row">
+
         <aside class="col-12 col-md-3">
-            <div class="p-3 mb-2 bg-secondary text-white">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item list-group-item-dark" >
-                    {{ case.train.serial.serial }}-{{ case.train.number }}</li>
-                <li class="list-group-item list-group-item-dark">Дата создания записи:
-                    {{ case.created|date:"d.m.Y" }}</li>
-                <li class="list-group-item list-group-item-dark">
-                    Создал: {{ case.author }}</li>
+             <p>
+            <ul class="list-group-item">
+
+<p>{{ case.train }}</p>
+                     <p>   Дата создания записи:
+                    {{ case.created|date:"d.m.Y" }}</p>
+                <p>
+                    Создал: {{ case.author.first_name }} {{ case.author.last_name }}</p>
             </ul>
-        </div>
+            </p>
         </aside>
         <article class="col-12 col-md-9">
-            <p>
-                {{ case.text }}
-            </p>
+                    <form method="post" enctype="multipart/form-data"
+                              action="{% url 'train:case_detail' form.instance.id %}">
+                    {% csrf_token %}
+
+                  <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">Краткое описание</label>
+                      <input  class="form-control" type="text" name="name" value="{{ form.name.value }}" maxlength="150" required id="id_name">
+                  </div>
+                  <div class="mb-3">
+                    <label for="exampleFormControlTextarea1" class="form-label">Подробное описание</label>
+                    <textarea   class="form-control" type="text" name="text" id="id_text" rows="8">{{ form.text.value }}</textarea>
+                  </div>
+                    <button type="submit" class="btn btn-light">
+                            Сохранить
+                    </button>
+                    <a type="button" class="btn btn-light"
+                    href="{% url 'train:cases_list' case.train.id %}">Вернуться к списку замечаний</a>
+
+                    </form>
         </article>
     </div>
     {% include 'includes/paginator.html' %}
