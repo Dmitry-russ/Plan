@@ -1,14 +1,17 @@
 {% extends 'base.html' %}
-{% load thumbnail %}
 {% block title %}
     <h1>Список поездов.</h1><br>
 {% endblock %}
-{% block name %}Список поездов.{% endblock %}
+
+
 {% block content %}
-    {% for train in page_obj %}
-        <button type="button" class="btn btn-primary">
-            <a href="{% url 'train:cases_list' train.id %}"> {{ train.serial }}-{{ train.number }}</a>
-        </button>
+    {% for train in page_obj %}       
+        <a type="button" class="btn btn-light"
+        href="{% url 'train:cases_list' train.id %}">{{ train.serial.serial }}-{{ train.number }}</a>
+
+        <a type="button" class="btn btn-light"
+        href="{% url 'train:cases_list' train.id %}">{{ train.serial.serial }}-{{ train.number }}</a>
+
         {% if not forloop.last %}
             <hr>
         {% endif %}

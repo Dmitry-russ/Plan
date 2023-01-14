@@ -6,7 +6,7 @@ app_name = 'train'
 urlpatterns = [
     path('', train_list, name='train_list'),
     path('train/<int:train_id>/', cases_list, name='cases_list'),
-    path('case/<int:case_id>/', case_detail, name='cases_detail'),
+    path('case/<int:case_id>/', case_detail, name='case_detail'),
     path('api/', include('api.urls')),
     path('admin/', admin.site.urls),
     # path('group/<slug:slug>/', group_posts, name='group_list'),

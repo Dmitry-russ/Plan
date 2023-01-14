@@ -78,32 +78,37 @@ class Train(CreatedModel):
     number = models.CharField(
         verbose_name="Номер",
         max_length=TEXT_FIELD_MAX_LENGTH,
-        validators=VALIDATE_PARAM
+        validators=VALIDATE_PARAM,
         )
     
     renter = models.CharField(
         verbose_name="Арендатор",
         max_length=TEXT_FIELD_MAX_LENGTH,
         blank=True,
+        null=True,
     )
 
     mileage = models.IntegerField(
         verbose_name="Пробег на дату",
         blank=True,
+        null=True,
         )
     mileage_date = models.DateField(
         verbose_name="Дата считывания пробега",
         blank=True,
+        null=True,
         )
     day_mileage = models.IntegerField(
         verbose_name="Среднесуточный пробег",
         blank=True,
+        null=True,
         )
 
     image = models.ImageField(
         'Фото',
         upload_to='Plan/',
-        blank=True
+        blank=True,
+        null=True,
     )
     class Meta:
         ordering = ["serial", "number"]
