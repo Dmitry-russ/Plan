@@ -8,8 +8,9 @@ https://docs.djangoproject.com/en/2.2/howto/deployment/wsgi/
 """
 
 import os
-from os.path import abspath, join
 
-for root, _, files in os.walk('/usr/local/lib/python3.4/site-packages/django'):
-    for f in files:
-        os.system('dos2unix %s' % abspath(join(root, f)))
+from django.core.wsgi import get_wsgi_application
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Plan.settings')
+
+application = get_wsgi_application()
