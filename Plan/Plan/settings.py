@@ -8,7 +8,7 @@ SECRET_KEY = 'g_2x_ts2e_9i-vvr=@c5(1ftq^r1$cxd=^d+9)7$pd=cwl7y3p'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ['194.187.122.3', '127.0.0.1', 'localhost']
 
 
 INSTALLED_APPS = [
