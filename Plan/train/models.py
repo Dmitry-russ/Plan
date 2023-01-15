@@ -227,9 +227,9 @@ class Cases(CreatedModel):
 class Image(models.Model):
     """Модель хранения изображений замечания."""
     author = models.ForeignKey(User,
-                               on_delete=models.SET_DEFAULT,
+                               on_delete=models.SET_NULL,
                                related_name='image',
-                               default='нет')
+                               null=True,)
     cases = models.ForeignKey(Cases,
                               on_delete=models.CASCADE,
                               related_name='image')
