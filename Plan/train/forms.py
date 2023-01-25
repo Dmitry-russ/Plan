@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Train, Cases, Maintenance
+from .models import Train, Cases, DoneMaiDate
 
 
 class CasesForm(forms.ModelForm):
@@ -18,6 +18,6 @@ class NewTrainForm(forms.ModelForm):
 
 class NewMaiForm(forms.ModelForm):
     class Meta:
-        model = Maintenance
+        model = DoneMaiDate
         fields = ('train', 'maintenance', 'maintenance_date',
                   'mileage', 'place', 'comment',)
