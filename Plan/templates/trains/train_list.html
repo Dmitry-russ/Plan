@@ -7,10 +7,13 @@
 {% block content %}
     {% for train in page_obj %}       
         <a type="button" class="btn btn-outline-light"
-        href="{% url 'train:cases_list' train.id %}">{{ train }}</a>
+        >{{ train }}</a>
 
         <a type="button" class="btn btn-outline-light"
         href="{% url 'train:cases_list' train.id %}"> Количество замечаний: {{ train.cases.count }}</a>
+
+        <a type="button" class="btn btn-outline-light"
+        > Проведено ТО: {{ train.cases.count }}</a>
 
         {% if not forloop.last %}
             <hr>

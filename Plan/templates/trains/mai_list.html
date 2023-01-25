@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}
+    <h1>{{ train }}</h1>
+{% endblock %}
+{% block content %}
+
+
+    {% for mai in page_obj %}
+
+        <a type="button" class="btn btn-light">{{ mai }}</a>
+
+        {% if not forloop.last %}
+            <hr>
+        {% endif %}
+    {% endfor %}
+    <hr>
+    <p> <a type="button" class="btn btn-light"
+    href="{% url 'train:mai_create' train.id %}">Добавить инспекцию</a></p>
+    {% include 'includes/paginator.html' %}
+{% endblock %}

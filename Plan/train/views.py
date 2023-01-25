@@ -1,8 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .forms import CasesForm, NewCaseForm, NewTrainForm
-from .models import Cases, Train
+from .forms import CasesForm, NewTrainForm, NewMaiForm
+from .models import Cases, Train, Maintenance
 from .utils import page_control
 
 PAGE_LIST = 30
@@ -22,21 +22,12 @@ def train_list(request):
 def cases_list(request, train_id):
     train = get_object_or_404(Train, id=train_id)
     cases = Cases.objects.filter(train=train)
-    # cases = train.cases.all
     page_obj = page_control(request, cases, PAGE_LIST)
     context = {
         'page_obj': page_obj,
         'train': train,
     }
     return render(request, 'trains/cases_list.html', context)
-
-
-# def case_detail(request, case_id):
-#     case = get_object_or_404(Cases, id=case_id)
-#     context = {
-#         'case': case,
-#     }
-#     return render(request, 'trains/case_detail.html', context)
 
 
 @login_required
@@ -61,7 +52,7 @@ def case_detail(request, case_id):
 
 @login_required
 def case_create(request, train_id):
-    form = NewCaseForm(request.POST or None, files=request.FILES or None)
+    form = CasesForm(request.POST or None, files=request.FILES or None)
     train = get_object_or_404(Train, id=train_id)
     context = {'form': form,
                'train': train}
@@ -92,3 +83,31 @@ def case_delete(request, case_id, train_id):
     if case.exists():
         case.delete()
     return redirect('train:cases_list', train_id)
+
+
+@login_required
+def mai_list(request, train_id):
+    train = get_object_or_404(Train, id=train_id)
+    mai = Maintenance.objects.filter(train=train)
+    page_obj = page_control(request, mai, PAGE_LIST)
+    context = {
+        'page_obj': page_obj,
+        'train': train,
+    }
+    return render(request, 'trains/mai_list.html', context)
+
+
+@login_required
+def mai_create(request, train_id):
+    form = NewMaiForm(request.POST or None, files=request.FILES or None)
+    train = get_object_or_404(Train, id=train_id)
+    context = {'form': form,
+               'train': train,
+               }
+    if not form.is_valid():
+        return render(request, 'trains/mai_create.html', context)
+    mai = form.save(commit=False)
+    mai.author = request.user
+    mai.train = train
+    mai.save()
+    return redirect('train:mai_list', train_id)

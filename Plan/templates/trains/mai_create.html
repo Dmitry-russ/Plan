@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %} {{ train }}{% endblock %}
+{% block name %}
+
+    <div class="row">
+        <article class="col-12 col-md-9">
+                    <form method="post" enctype="multipart/form-data"
+                              action="{% url 'train:mai_create' train.id %}">
+                    {% csrf_token %}
+                  <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">Вид инспекции</label>
+                      <input  class="form-control" type="text" name="maintenance"  required id="id_name">
+                  </div>
+                  <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">Дата проведения</label>
+                      <input  class="form-control" type="text" name="maintenance_date"  required id="id_name">
+                  </div>
+                  <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">Пробег</label>
+                      <input  class="form-control" type="text" name="mileage"  required id="id_name">
+                  </div>
+                  <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">Место</label>
+                      <input  class="form-control" type="text" name="place"  required id="id_name">
+                  </div>
+                  <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">Комментарий</label>
+                      <input  class="form-control" type="text" name="comment"  required id="id_name">
+                  </div>
+                    <button type="submit" class="btn btn-light">
+                            Сохранить
+                    </button>
+                    <a type="button" class="btn btn-light"
+                    href="{% url 'train:mai_list' train.id %}">Вернуться к списку инспекций</a>
+
+
+                    </form>
+        </article>
+    </div>
+    {% include 'includes/paginator.html' %}
+{% endblock %}

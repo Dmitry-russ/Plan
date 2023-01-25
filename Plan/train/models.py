@@ -20,6 +20,12 @@ ALL_MAINTENANCE_CHOICES = [
     ("I5", 'I5'),
     ("I6", 'I6'),
     ("30", '30 суток'),
+    ("Зима", 'Зима'),
+    ("Лето", 'Лето'),
+    ("-", '-'),
+    ("Vi*", 'Vi*'),
+    ("I1*", 'I1*'),
+    ("I2*", 'I2*'),
 ]
 ALL_PLACE_CHOICES = [
     ("ЕКБ", 'Екатеринбург'),
@@ -124,10 +130,42 @@ class Train(CreatedModel):
         ]
 
 
+class Maintenance(CreatedModel):
+    """Модель возможных инспекций."""
+    MAINTENANCE_CHOICES = ALL_MAINTENANCE_CHOICES
+    author = models.ForeignKey(User,
+                               on_delete=models.SET_NULL,
+                               null=True,
+                               related_name='maintenance_list', )
+    type = models.CharField(
+        max_length=2,
+        choices=MAINTENANCE_CHOICES,
+        default="Vi",
+        verbose_name="Тип инспекции",
+    )
+    mileage = models.IntegerField(
+        verbose_name="Планируемый пробег",
+        blank=True,
+        null=True,
+    )
+    number = models.IntegerField(
+        verbose_name="Номер инспекции по порядку",
+        blank=True,
+        null=True,
+    )
+    comment = models.CharField(
+        verbose_name="Примечание",
+        max_length=MAX_LEN_CASES_SMALL_CALL,
+        blank=True,
+        null=True,
+    )
+
+    def __str__(self) -> str:
+        return f'{self.number}, {self.type}, {self.mileage}'
+
+
 class DoneMaiDate(CreatedModel):
     """Модель хранения данных о проведенных ТО."""
-
-    MAINTENANCE_CHOICES = ALL_MAINTENANCE_CHOICES
     PLACE_CHOICES = ALL_PLACE_CHOICES
     author = models.ForeignKey(User,
                                on_delete=models.SET_NULL,
@@ -138,18 +176,16 @@ class DoneMaiDate(CreatedModel):
                               on_delete=models.CASCADE,
                               related_name='maintenance')
 
-    maintenance = models.CharField(
-        max_length=2,
-        choices=MAINTENANCE_CHOICES,
-        default="Vi",
-        verbose_name="Вид ТО"
-    )
+    maintenance = models.ForeignKey(Maintenance,
+                                    verbose_name="Вид ТО",
+                                    on_delete=models.CASCADE,
+                                    related_name='maintenance')
 
     maintenance_date = models.DateField(
         verbose_name="Дата")
     place = models.CharField(
         max_length=2,
-        choices=MAINTENANCE_CHOICES,
+        choices=PLACE_CHOICES,
         default="ЕКБ",
         verbose_name="Место проведения"
     )
@@ -157,11 +193,20 @@ class DoneMaiDate(CreatedModel):
     mileage = models.IntegerField(
         verbose_name="Пробег")
 
+    comment = models.CharField(
+        verbose_name="Примечание",
+        max_length=MAX_LEN_CASES_SMALL_CALL,
+        blank=True,
+        null=True,
+    )
+
     class Meta:
         ordering = ["-maintenance_date"]
         constraints = [
             models.UniqueConstraint(fields=["train", "maintenance_date"],
-                                    name="train_maintenance_date")
+                                    name="train_maintenance_date"),
+            models.UniqueConstraint(fields=["train", "maintenance"],
+                                    name="train_maintenance")
         ]
 
 

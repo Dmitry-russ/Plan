@@ -1,15 +1,9 @@
 from django import forms
 
-from .models import Train, Cases
+from .models import Train, Cases, Maintenance
 
 
 class CasesForm(forms.ModelForm):
-    class Meta:
-        model = Cases
-        fields = ('name', 'text',)
-
-
-class NewCaseForm(forms.ModelForm):
     class Meta:
         model = Cases
         fields = ('name', 'text',)
@@ -21,7 +15,9 @@ class NewTrainForm(forms.ModelForm):
         fields = ('serial', 'number', 'renter',
                   'mileage', 'mileage_date', 'day_mileage',)
 
-# class CasesForm(forms.ModelForm):
-#     class Meta:
-#         model = Comment
-#         fields = ('text',)
+
+class NewMaiForm(forms.ModelForm):
+    class Meta:
+        model = Maintenance
+        fields = ('train', 'maintenance', 'maintenance_date',
+                  'mileage', 'place', 'comment',)

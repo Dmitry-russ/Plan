@@ -2,7 +2,8 @@ from django.contrib import admin
 from django.urls import include, path
 
 from .views import (train_list, cases_list, case_detail,
-                    case_create, train_create, case_delete)
+                    case_create, train_create, case_delete,
+                    mai_list, mai_create,)
 
 app_name = 'train'
 urlpatterns = [
@@ -13,6 +14,8 @@ urlpatterns = [
     path('create/', train_create, name='train_create'),
     path('delete/case/<int:case_id>/<int:train_id>/',
          case_delete, name='case_delete'),
+    path('mai/<int:train_id>/', mai_list, name='mai_list'),
+    path('mai/<int:train_id>/create', mai_create, name='mai_create'),
     path('api/', include('api.urls')),
     path('admin/', admin.site.urls),
     # path('group/<slug:slug>/', group_posts, name='group_list'),
