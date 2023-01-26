@@ -7,7 +7,8 @@
                     <form method="post" enctype="multipart/form-data"
                               action="{% url 'train:mai_create' train.id %}">
                     {% csrf_token %}
-                  <div class="mb-3">
+                    {{ form.as_p }}
+                  <!-- <div class="mb-3">
                     <label for="exampleFormControlInput1" class="form-label">Вид инспекции</label>
                       <input  class="form-control" type="text" name="maintenance"  required id="id_name">
                   </div>
@@ -26,7 +27,7 @@
                   <div class="mb-3">
                     <label for="exampleFormControlInput1" class="form-label">Комментарий</label>
                       <input  class="form-control" type="text" name="comment"  required id="id_name">
-                  </div>
+                  </div> -->
                     <button type="submit" class="btn btn-light">
                             Сохранить
                     </button>

@@ -19,5 +19,5 @@ class NewTrainForm(forms.ModelForm):
 class NewMaiForm(forms.ModelForm):
     class Meta:
         model = DoneMaiDate
-        fields = ('train', 'maintenance', 'maintenance_date',
+        fields = ('maintenance', 'maintenance_date',
                   'mileage', 'place', 'comment',)

@@ -4,17 +4,36 @@
 {% endblock %}
 {% block content %}
 
+<p> <a type="button" class="btn btn-light"
+    href="{% url 'train:mai_create' train.id %}">Добавить инспекцию</a></p>
+
+
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Type</th>
+        <th scope="col">Mileage</th>
+        <th scope="col">Date</th>
+        <th scope="col">Place</th>
+        <th scope="col">Comment</th>
+      </tr>
+    </thead>
+    <tbody>
 
     {% for mai in page_obj %}
-
-        <a type="button" class="btn btn-light">{{ mai }}</a>
-
-        {% if not forloop.last %}
-            <hr>
-        {% endif %}
+      <tr>
+        <th scope="row">{{ mai.maintenance.number }}</th>
+        <td>{{ mai.maintenance.type }}</td>
+        <td>{{ mai.mileage }}</td>
+        <td>{{ mai.maintenance_date }}</td>
+        <td>{{ mai.place }}</td>
+        <td>{{ mai.comment }}</td>
+      </tr>
     {% endfor %}
-    <hr>
-    <p> <a type="button" class="btn btn-light"
-    href="{% url 'train:mai_create' train.id %}">Добавить инспекцию</a></p>
+    </tbody>
+  </table>
+
+
     {% include 'includes/paginator.html' %}
 {% endblock %}

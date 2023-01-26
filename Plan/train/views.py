@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import CasesForm, NewTrainForm, NewMaiForm
-from .models import Cases, Train, Maintenance
+from .models import Cases, Train, DoneMaiDate
 from .utils import page_control
 
 PAGE_LIST = 30
@@ -88,7 +88,7 @@ def case_delete(request, case_id, train_id):
 @login_required
 def mai_list(request, train_id):
     train = get_object_or_404(Train, id=train_id)
-    mai = Maintenance.objects.filter(train=train)
+    mai = DoneMaiDate.objects.filter(train=train)
     page_obj = page_control(request, mai, PAGE_LIST)
     context = {
         'page_obj': page_obj,

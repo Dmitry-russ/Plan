@@ -13,7 +13,7 @@
         href="{% url 'train:cases_list' train.id %}"> Количество замечаний: {{ train.cases.count }}</a>
 
         <a type="button" class="btn btn-outline-light"
-        > Проведено ТО: {{ train.cases.count }}</a>
+        href="{% url 'train:mai_list' train.id %}"> Проведено ТО: {{ train.maintenance.count }}</a>
 
         {% if not forloop.last %}
             <hr>

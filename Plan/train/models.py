@@ -138,7 +138,7 @@ class Maintenance(CreatedModel):
                                null=True,
                                related_name='maintenance_list', )
     type = models.CharField(
-        max_length=2,
+        max_length=5,
         choices=MAINTENANCE_CHOICES,
         default="Vi",
         verbose_name="Тип инспекции",
@@ -184,7 +184,7 @@ class DoneMaiDate(CreatedModel):
     maintenance_date = models.DateField(
         verbose_name="Дата")
     place = models.CharField(
-        max_length=2,
+        max_length=30,
         choices=PLACE_CHOICES,
         default="ЕКБ",
         verbose_name="Место проведения"
@@ -201,7 +201,7 @@ class DoneMaiDate(CreatedModel):
     )
 
     class Meta:
-        ordering = ["-maintenance_date"]
+        ordering = ["created"]
         constraints = [
             models.UniqueConstraint(fields=["train", "maintenance_date"],
                                     name="train_maintenance_date"),
