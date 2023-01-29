@@ -159,6 +159,10 @@ class Maintenance(CreatedModel):
         blank=True,
         null=True,
     )
+    order = models.BooleanField(
+        verbose_name="Плановый инспекции по порядку",
+        default=True,
+    )
 
     def __str__(self) -> str:
         return f'{self.number}, {self.type}, {self.mileage}'
@@ -274,7 +278,7 @@ class Image(models.Model):
     author = models.ForeignKey(User,
                                on_delete=models.SET_NULL,
                                related_name='image',
-                               null=True,)
+                               null=True, )
     cases = models.ForeignKey(Cases,
                               on_delete=models.CASCADE,
                               related_name='image')

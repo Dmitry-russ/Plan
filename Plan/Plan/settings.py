@@ -10,11 +10,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG =  os.getenv('DEBUG')
+DEBUG = os.getenv('DEBUG')
 
-ALLOWED_HOSTS = ['*',]
-
-
+ALLOWED_HOSTS = ['*', ]
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -59,7 +57,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Plan.wsgi.application'
 
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -97,19 +94,22 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/2.2/topics/i18n/
-
-LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
+
+DATE_FORMAT = "d-m-Y"
 
 USE_I18N = True
 
-USE_L10N = True
-
 USE_TZ = True
+
+USE_L10N = False
+
+LANGUAGE_CODE = 'ru-RU'
+
+TIME_ZONE = 'Asia/Yekaterinburg'
+
+DATE_INPUT_FORMATS = ['%d.%m.%Y']
+
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

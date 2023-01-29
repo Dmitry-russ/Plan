@@ -8,18 +8,18 @@
     {% for case in page_obj %}
 
         <a type="button" class="btn btn-light"
-        href="{% url 'train:case_detail' case.id %}">{{ case.name }}</a>
+           href="{% url 'train:case_detail' case.id %}">{{ case.name }}</a>
 
 
         <a type="button" class="btn btn-light"
-        href="{% url 'train:case_delete' case.id train.id %}">Удалить</a>
+           href="{% url 'train:case_delete' case.id train.id %}">Удалить</a>
 
         {% if not forloop.last %}
             <hr>
         {% endif %}
     {% endfor %}
     <hr>
-    <p> <a type="button" class="btn btn-light"
-    href="{% url 'train:case_create' train.id %}">Создать новое замечание</a></p>
+    <p><a type="button" class="btn btn-light"
+          href="{% url 'train:case_create' train.id %}">Создать новое замечание</a></p>
     {% include 'includes/paginator.html' %}
 {% endblock %}

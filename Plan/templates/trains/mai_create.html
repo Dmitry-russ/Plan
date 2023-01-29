@@ -1,41 +1,33 @@
 {% extends 'base.html' %}
-{% block title %} {{ train }}{% endblock %}
+{% block title %} {{ train }} {% endblock %}
 {% block name %}
 
+    {% if create or is_edit %}
+        <label for="exampleFormControlInput1" class="form-label">Инспекция: {{ mai_type }} </label>
+    {% endif %}
     <div class="row">
         <article class="col-12 col-md-9">
-                    <form method="post" enctype="multipart/form-data"
-                              action="{% url 'train:mai_create' train.id %}">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                  <!-- <div class="mb-3">
-                    <label for="exampleFormControlInput1" class="form-label">Вид инспекции</label>
-                      <input  class="form-control" type="text" name="maintenance"  required id="id_name">
-                  </div>
-                  <div class="mb-3">
-                    <label for="exampleFormControlInput1" class="form-label">Дата проведения</label>
-                      <input  class="form-control" type="text" name="maintenance_date"  required id="id_name">
-                  </div>
-                  <div class="mb-3">
-                    <label for="exampleFormControlInput1" class="form-label">Пробег</label>
-                      <input  class="form-control" type="text" name="mileage"  required id="id_name">
-                  </div>
-                  <div class="mb-3">
-                    <label for="exampleFormControlInput1" class="form-label">Место</label>
-                      <input  class="form-control" type="text" name="place"  required id="id_name">
-                  </div>
-                  <div class="mb-3">
-                    <label for="exampleFormControlInput1" class="form-label">Комментарий</label>
-                      <input  class="form-control" type="text" name="comment"  required id="id_name">
-                  </div> -->
-                    <button type="submit" class="btn btn-light">
-                            Сохранить
-                    </button>
-                    <a type="button" class="btn btn-light"
-                    href="{% url 'train:mai_list' train.id %}">Вернуться к списку инспекций</a>
 
+            {% if create %}
+                <form method="post" enctype="multipart/form-data"
+                      action="{% url 'train:mai_create_from_list' train_id=train.id mai_id=mai_type.pk %}">
+            {% elif is_edit %}
+                <form method="post" enctype="multipart/form-data"
+                      action="{% url 'train:mai_detail' mai_id=mai_done.id %}">
+            {% else %}
+                <form method="post" enctype="multipart/form-data"
+                      action="{% url 'train:mai_create' train.id %}">
+            {% endif %}
 
-                    </form>
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-light">
+                Сохранить
+            </button>
+            <a type="button" class="btn btn-light"
+               href="{% url 'train:mai_list' train.id %}">Вернуться к списку инспекций</a>
+
+            </form>
         </article>
     </div>
     {% include 'includes/paginator.html' %}

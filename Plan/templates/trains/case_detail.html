@@ -4,11 +4,11 @@
     <div class="row">
 
         <aside class="col-12 col-md-3">
-             <p>
+            <p>
             <ul class="list-group-item">
 
-<p>{{ case.train }}</p>
-                     <p>   Дата создания записи:
+                <p>{{ case.train }}</p>
+                <p> Дата создания записи:
                     {{ case.created|date:"d.m.Y" }}</p>
                 <p>
                     Создал: {{ case.author.first_name }} {{ case.author.last_name }}</p>
@@ -16,25 +16,26 @@
             </p>
         </aside>
         <article class="col-12 col-md-9">
-                    <form method="post" enctype="multipart/form-data"
-                              action="{% url 'train:case_detail' form.instance.id %}">
-                    {% csrf_token %}
-
-                  <div class="mb-3">
+            <form method="post" enctype="multipart/form-data"
+                  action="{% url 'train:case_detail' form.instance.id %}">
+                {% csrf_token %}
+                <div class="mb-3">
                     <label for="exampleFormControlInput1" class="form-label">Краткое описание</label>
-                      <input  class="form-control" type="text" name="name" value="{{ form.name.value }}" maxlength="150" required id="id_name">
-                  </div>
-                  <div class="mb-3">
+                    <input class="form-control" type="text" name="name" value="{{ form.name.value }}" maxlength="150"
+                           required id="id_name">
+                </div>
+                <div class="mb-3">
                     <label for="exampleFormControlTextarea1" class="form-label">Подробное описание</label>
-                    <textarea   class="form-control" type="text" name="text" id="id_text" rows="8">{{ form.text.value }}</textarea>
-                  </div>
-                    <button type="submit" class="btn btn-light">
-                            Сохранить
-                    </button>
-                    <a type="button" class="btn btn-light"
-                    href="{% url 'train:cases_list' case.train.id %}">Вернуться к списку замечаний</a>
+                    <textarea class="form-control" type="text" name="text" id="id_text"
+                              rows="8">{{ form.text.value }}</textarea>
+                </div>
+                <button type="submit" class="btn btn-light">
+                    Сохранить
+                </button>
+                <a type="button" class="btn btn-light"
+                   href="{% url 'train:cases_list' case.train.id %}">Вернуться к списку замечаний</a>
 
-                    </form>
+            </form>
         </article>
     </div>
     {% include 'includes/paginator.html' %}
