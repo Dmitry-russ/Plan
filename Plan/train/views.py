@@ -5,7 +5,7 @@ from .forms import CasesForm, NewTrainForm, NewMaiForm, NewMaiFormFromList
 from .models import Cases, Train, DoneMaiDate, Maintenance
 from .utils import page_control, result_mai_list
 
-PAGE_LIST = 30
+PAGE_LIST = 40
 
 
 @login_required

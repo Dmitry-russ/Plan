@@ -20,6 +20,7 @@
     {% endfor %}
     <hr>
     <p><a type="button" class="btn btn-light"
-          href="{% url 'train:case_create' train.id %}">Создать новое замечание</a></p>
+          href="{% url 'train:case_create' train.id %}">Создать новое замечание</a> <a type="button" class="btn btn-light"
+          href="{% url 'train:train_list' %}">Назад к списку поездов</a></p>
     {% include 'includes/paginator.html' %}
 {% endblock %}
