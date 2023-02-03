@@ -210,7 +210,7 @@ class DoneMaiDate(CreatedModel):
             models.UniqueConstraint(fields=["train", "maintenance_date"],
                                     name="train_maintenance_date"),
             models.UniqueConstraint(fields=["train", "maintenance"],
-                                    name="train_maintenance")
+                                    name="train_maintenance_rel")
         ]
 
 
