@@ -5,10 +5,12 @@
 {% block content %}
 
     <p><a type="button" class="btn btn-light"
+        href="{% url 'train:train_list' %}">Назад к списку поездов</a>
+        <a type="button" class="btn btn-light"
           href="{% url 'train:mai_create' train.id %}">Добавить внеочередную инспекцию</a></p>
 
 
-    <table class="table table-striped table-hover">
+    <table class="table table-bordered">
         <thead>
         <tr>
             <th scope="col">#</th>
@@ -17,6 +19,7 @@
             <th scope="col">Date</th>
             <th scope="col">Place</th>
             <th scope="col">Comment</th>
+            <th scope="col">Author</th>
             <th scope="col">Deal</th>
         </tr>
         </thead>
@@ -25,6 +28,8 @@
         {% for mai in result %}
             {% if mai.place == 'МСК' %}
                 <tr class="table-warning">
+            {% elif mai.place == 'СПБ' %}
+                <tr class="table-info">
                     {% else %}
                 <tr>
             {% endif %}
@@ -48,6 +53,7 @@
         {% else %}
             <td>{{ mai.comment }}</td>
         {% endif %}
+        <td>{{ mai.author.username }}</td>
         {% if mai.done %}
             <td><a type="button" class="btn btn-light"
                    href="{% url 'train:mai_detail' mai_id=mai.pk %}">Изменить</td>
@@ -66,6 +72,8 @@
     </table>
 
     <p><a type="button" class="btn btn-light"
-        href="{% url 'train:train_list' %}">Назад к списку поездов</a></p>
+        href="{% url 'train:train_list' %}">Назад к списку поездов</a>
+<a type="button" class="btn btn-light"
+          href="{% url 'train:mai_create' train.id %}">Добавить внеочередную инспекцию</a></p>
     {% include 'includes/paginator.html' %}
 {% endblock %}

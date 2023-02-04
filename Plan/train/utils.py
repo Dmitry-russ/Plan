@@ -13,53 +13,44 @@ def result_mai_list(main: Maintenance, donemai: DoneMaiDate):
     """Функция расчета необходимых к выводу проведенных ТО."""
     i: int = 0  # счетчик выполненных инспекций
     k: int = 0  # счетчик будущих инспекций
+    flag: bool = True  # дополнительный флаг
     result: list = []  # итоговый список
-    while k < len(main) and k < (len(donemai) + 7):
-        # если выполненные инспекции совпадают с порядком проведения
-        if i < len(donemai) and donemai[i].maintenance == main[k]:
+    while k < len(main):
+        #  i = 0
+        #  flag = True
+        #  while i < len(donemai) and flag:
+        if donemai and donemai[0].maintenance == main[k]:
             check = {
-                "number": donemai[i].maintenance.number,
-                "type": donemai[i].maintenance.type,
-                "mileage": donemai[i].mileage,
-                "maintenance_date": donemai[i].maintenance_date,
-                "place": donemai[i].place,
-                "comment": donemai[i].comment,
-                "done": True,
-                "pk": donemai[i].pk,
-            }
-            result.append(check)
-            i += 1
-            k += 1
-        # если пропущена инспекция
-        elif i < len(donemai) and donemai[i].maintenance.number:
-            check = {
-                "number": main[k].number,
-                "type": main[k].type,
-                "mileage": main[k].mileage,
-                "maintenance_date": "-",
-                "place": "-",
-                "comment": "не проводилась",
-                "done": False,
-                "pk": main[k].pk,
-            }
+                    "mileage": donemai[0].mileage,
+                    "number": donemai[0].maintenance.number,
+                    "type": donemai[0].maintenance.type,
+                    "maintenance_date": donemai[0].maintenance_date,
+                    "place": donemai[0].place,
+                    "comment": donemai[0].comment,
+                    "done": True,
+                    "pk": donemai[0].pk,
+                    "author": donemai[0].author,
+                }
             result.append(check)
             k += 1
-        # внеочередная инспекция
-        elif i < len(donemai):
+            donemai.pop(i)
+            #  flag = False
+        elif donemai and donemai[0].maintenance.order == False:
             check = {
-                "number": donemai[i].maintenance.number,
-                "type": donemai[i].maintenance.type,
-                "mileage": donemai[i].mileage,
-                "maintenance_date": donemai[i].maintenance_date,
-                "place": donemai[i].place,
-                "comment": donemai[i].comment,
-                "done": True,
-                "pk": donemai[i].pk,
+                    "mileage": donemai[0].mileage,
+                    "number": donemai[0].maintenance.number,
+                    "type": donemai[0].maintenance.type,
+                    "maintenance_date": donemai[0].maintenance_date,
+                    "place": donemai[0].place,
+                    "comment": donemai[0].comment,
+                    "done": True,
+                    "pk": donemai[0].pk,
+                    "author": donemai[0].author,
             }
             result.append(check)
-            i += 1
-        # выполненные инспекции закончились
-        elif i >= len(donemai):
+            donemai.pop(0)
+            #  flag = False
+        else:
             check = {
                 "number": main[k].number,
                 "type": main[k].type,

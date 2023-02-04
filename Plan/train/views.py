@@ -97,8 +97,8 @@ def mai_list(request, train_id):
     """Вывод списка проведенных и ближайших инспекций."""
 
     train = get_object_or_404(Train, id=train_id)
-    donemai = DoneMaiDate.objects.filter(train=train)
-    main = Maintenance.objects.filter(order=True)
+    donemai = list(DoneMaiDate.objects.filter(train=train))
+    main = list(Maintenance.objects.filter(order=True))
     result = result_mai_list(main, donemai)
     context = {
         'result': result,
@@ -173,6 +173,7 @@ def mai_detail(request, mai_id):
         files=request.FILES or None,
         instance=mai_done, )
     if form.is_valid():
+        mai_done.author = request.user
         mai_done.save()
         form = NewMaiFormFromList(
             request.POST or None,
