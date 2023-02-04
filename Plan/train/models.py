@@ -165,7 +165,14 @@ class Maintenance(CreatedModel):
     )
 
     def __str__(self) -> str:
-        return f'{self.number}, {self.type}, {self.mileage}'
+        result: str = ""
+        if self.number:
+            result += f'{self.number} '
+        if self.type:
+            result += f'{self.type} '
+        if self.mileage:
+            result += f'{self.mileage} '
+        return result
 
 
 class DoneMaiDate(CreatedModel):
@@ -209,8 +216,6 @@ class DoneMaiDate(CreatedModel):
         constraints = [
             models.UniqueConstraint(fields=["train", "maintenance_date"],
                                     name="train_maintenance_date"),
-            models.UniqueConstraint(fields=["train", "maintenance"],
-                                    name="train_maintenance_rel")
         ]
 
 

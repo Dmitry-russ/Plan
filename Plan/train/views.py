@@ -99,10 +99,12 @@ def mai_list(request, train_id):
     train = get_object_or_404(Train, id=train_id)
     donemai = list(DoneMaiDate.objects.filter(train=train))
     main = list(Maintenance.objects.filter(order=True))
+    main_another = list(Maintenance.objects.filter(order=False))
     result = result_mai_list(main, donemai)
     context = {
         'result': result,
         'train': train,
+        'main_another': main_another,
     }
     return render(request, 'trains/mai_list.html', context)
 
