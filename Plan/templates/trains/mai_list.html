@@ -3,7 +3,6 @@
     <h1>{{ train }}</h1>
 {% endblock %}
 {% block content %}
-
     <p><a type="button" class="btn btn-light"
           href="{% url 'train:train_list' %}">Назад к списку поездов</a>
     </p>
@@ -31,7 +30,7 @@
             <th scope="col">Place</th>
             <th scope="col">Comment</th>
             <th scope="col">Author</th>
-            <th scope="col">Deal</th>
+            <th scope="col">Action</th>
         </tr>
         </thead>
         <tbody>
@@ -68,12 +67,9 @@
         {% if mai.done %}
             <td><a type="button" class="btn btn-outline-dark"
                    href="{% url 'train:mai_detail' mai_id=mai.pk %}">Изменить</td>
-            <td><a type="button" class="btn btn-outline-danger"
-                   href="{% url 'train:mai_delete' mai_id=mai.pk %}">Удалить</td>
         {% else %}
             <td><a type="button" class="btn btn-outline-dark"
                    href="{% url 'train:mai_create_from_list' train_id=train.id mai_id=mai.pk %}">Создать</td>
-            <td>-</td>
         {% endif %}
 
         </tr>

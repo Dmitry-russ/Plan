@@ -14,7 +14,12 @@ def train_list(request):
 
     trains = Train.objects.all()
     page_obj = page_control(request, trains, PAGE_LIST)
-    context = {'page_obj': page_obj, }
+
+    main_delete = DoneMaiDate.objects.filter(musthave=False)
+
+    context = {'page_obj': page_obj,
+               'main_delete': main_delete,
+               'admin': request.user.is_staff, }
     return render(request, 'trains/train_list.html', context)
 
 
@@ -105,6 +110,7 @@ def mai_list(request, train_id):
         'result': result,
         'train': train,
         'main_another': main_another,
+        'admin': request.user.is_staff,
     }
     return render(request, 'trains/mai_list.html', context)
 
@@ -113,11 +119,20 @@ def mai_list(request, train_id):
 def mai_delete(request, mai_id):
     """Удаление проведенной инспекции."""
 
-    mai = DoneMaiDate.objects.filter(id=mai_id)
-    if mai.exists():
-        train = mai[0].train
+    mai = get_object_or_404(DoneMaiDate, id=mai_id)
+    if request.user.is_staff:
+        train = mai.train
         mai.delete()
-    return redirect('train:mai_list', train.id)
+        return redirect('train:mai_list', train.id)
+
+    train = mai.train
+    if mai.musthave is False:
+        mai.musthave = True
+        mai.save()
+        return redirect('train:mai_detail', mai.id)
+    mai.musthave = False
+    mai.save()
+    return redirect('train:mai_detail', mai.id)
 
 
 @login_required
@@ -186,5 +201,6 @@ def mai_detail(request, mai_id):
                'train': train,
                'is_edit': True,
                'mai_done': mai_done,
-               'mai_type': mai_done.maintenance, }
+               'mai_type': mai_done.maintenance,
+               'admin': request.user.is_staff, }
     return render(request, 'trains/mai_create.html', context)

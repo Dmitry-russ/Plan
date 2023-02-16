@@ -21,31 +21,33 @@ def result_mai_list(main: Maintenance, donemai: DoneMaiDate):
         #  while i < len(donemai) and flag:
         if donemai and donemai[0].maintenance == main[k]:
             check = {
-                    "mileage": donemai[0].mileage,
-                    "number": donemai[0].maintenance.number,
-                    "type": donemai[0].maintenance.type,
-                    "maintenance_date": donemai[0].maintenance_date,
-                    "place": donemai[0].place,
-                    "comment": donemai[0].comment,
-                    "done": True,
-                    "pk": donemai[0].pk,
-                    "author": donemai[0].author,
-                }
+                "mileage": donemai[0].mileage,
+                "number": donemai[0].maintenance.number,
+                "type": donemai[0].maintenance.type,
+                "maintenance_date": donemai[0].maintenance_date,
+                "place": donemai[0].place,
+                "comment": donemai[0].comment,
+                "done": True,
+                "pk": donemai[0].pk,
+                "author": donemai[0].author,
+                "musthave": donemai[0].musthave,
+            }
             result.append(check)
             k += 1
             donemai.pop(i)
             #  flag = False
         elif donemai and donemai[0].maintenance.order == False:
             check = {
-                    "mileage": donemai[0].mileage,
-                    "number": donemai[0].maintenance.number,
-                    "type": donemai[0].maintenance.type,
-                    "maintenance_date": donemai[0].maintenance_date,
-                    "place": donemai[0].place,
-                    "comment": donemai[0].comment,
-                    "done": True,
-                    "pk": donemai[0].pk,
-                    "author": donemai[0].author,
+                "mileage": donemai[0].mileage,
+                "number": donemai[0].maintenance.number,
+                "type": donemai[0].maintenance.type,
+                "maintenance_date": donemai[0].maintenance_date,
+                "place": donemai[0].place,
+                "comment": donemai[0].comment,
+                "done": True,
+                "pk": donemai[0].pk,
+                "author": donemai[0].author,
+                "musthave": donemai[0].musthave,
             }
             result.append(check)
             donemai.pop(0)

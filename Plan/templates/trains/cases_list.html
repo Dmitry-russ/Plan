@@ -11,7 +11,7 @@
            href="{% url 'train:case_detail' case.id %}">{{ case.name }}</a>
 
 
-        <a type="button" class="btn btn-light"
+        <a type="button" class="btn btn-light" onclick="clicked(event)"
            href="{% url 'train:case_delete' case.id train.id %}">Удалить</a>
 
         {% if not forloop.last %}
@@ -23,4 +23,14 @@
           href="{% url 'train:case_create' train.id %}">Создать новое замечание</a> <a type="button" class="btn btn-light"
           href="{% url 'train:train_list' %}">Назад к списку поездов</a></p>
     {% include 'includes/paginator.html' %}
+
+    <script>
+        function clicked(e)
+        {
+            if(!confirm('Действительно удалить запись? Запись будет удалена безвозвратно.')) {
+                e.preventDefault();
+            }
+        }
+    </script>
+
 {% endblock %}

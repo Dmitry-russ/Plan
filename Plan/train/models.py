@@ -210,6 +210,7 @@ class DoneMaiDate(CreatedModel):
         blank=True,
         null=True,
     )
+    musthave = models.BooleanField(default=True)
 
     class Meta:
         ordering = ["mileage"]
