@@ -7,7 +7,7 @@ from django.contrib.auth.views import (LoginView, LogoutView,
                                        PasswordResetView)
 from django.urls import path
 
-from . import views
+# from . import views
 from .views import author
 
 app_name = 'users'
