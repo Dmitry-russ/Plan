@@ -4,11 +4,10 @@ from django.contrib.auth.views import (PasswordChangeDoneView,
 from django.urls import include, path
 
 app_name = 'Plan'
-urlpatterns = [
-    path('', include('train.urls')),
-    path('api/', include('api.urls')),
-    path('auth/', include('users.urls', namespace='users')),
-    path('admin/', admin.site.urls),
+
+user_patterns = [
+    # path('', include('djoser.urls')),
+    # path('auth/', include('djoser.urls.authtoken')),
     path('password_change/done/',
          PasswordChangeDoneView.as_view(
              template_name='users/password_change_done.html'),
@@ -16,6 +15,14 @@ urlpatterns = [
     path('password_reset/done/', PasswordResetDoneView.as_view(
         template_name='users/password_reset_done.html'),
          name='password_reset_done'),
+]
+
+urlpatterns = [
+    path('', include('train.urls')),
+    path('', include(user_patterns)),
+    path('api/', include('api.urls')),
+    path('auth/', include('users.urls', namespace='users')),
+    path('admin/', admin.site.urls),
 ]
 
 handler404 = 'core.views.page_not_found'

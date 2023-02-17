@@ -11,7 +11,7 @@
     <div class="btn-group" role="group" aria-label="Default button group">
         {% for mai_a in main_another %}
 
-            <a type="button" class="btn btn-outline-dark"
+            <a type="button" class="btn btn-outline-light"
                href="{% url 'train:mai_create_from_list' train_id=train.id mai_id=mai_a.pk %}">
                 Добавить: {{ mai_a.comment }}</a>
 
@@ -36,11 +36,9 @@
         <tbody>
 
         {% for mai in result %}
-            {% if mai.place == 'МСК' %}
+            {% if mai.place == 'ЕКБ' or mai.place == '-' %}
                 <tr class="table-secondary">
-                    {% elif mai.place == 'СПБ' %}
-                <tr class="table-primary">
-                    {% else %}
+            {% else %}
                 <tr>
             {% endif %}
 
@@ -71,7 +69,6 @@
             <td><a type="button" class="btn btn-outline-dark"
                    href="{% url 'train:mai_create_from_list' train_id=train.id mai_id=mai.pk %}">Создать</td>
         {% endif %}
-
         </tr>
         {% endfor %}
 
