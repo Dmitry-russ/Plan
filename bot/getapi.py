@@ -27,7 +27,7 @@ def check_train(TRAIN_ENDPOINT, API_TOKEN, text) -> list:
 
 
 def finde_mai(MAI_ENDPOINT, API_TOKEN, text) -> requests:
-    """Запрос данных о всех сохраненных расходах пользователя."""
+    """Запрос данных о инспекциях."""
     textchange = text.split()
     response = requests.get(
         url=MAI_ENDPOINT + f'{textchange[0]}/{textchange[1]}/',
@@ -35,6 +35,8 @@ def finde_mai(MAI_ENDPOINT, API_TOKEN, text) -> requests:
     )
     # добавить обратботку 404 и 500 ошибок сервера
     result = response.json()
+    if len(result) == 0:
+        return 'Инспекций еще не проводилось.'
     result_messege: str = ''
     for res in result:
         train_serial = res.get('train').get('serial').get('serial')
