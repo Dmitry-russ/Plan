@@ -1,3 +1,5 @@
+import datetime
+
 import requests
 
 
@@ -18,6 +20,9 @@ def check_train(TRAIN_ENDPOINT, API_TOKEN, text) -> list:
         url=TRAIN_ENDPOINT + f'{text}/',
         headers={'Authorization': API_TOKEN},
     )
+    if response.status_code == 404:
+        return None
+
     return response.json()
 
 
@@ -25,8 +30,20 @@ def finde_mai(MAI_ENDPOINT, API_TOKEN, text) -> requests:
     """Запрос данных о всех сохраненных расходах пользователя."""
     textchange = text.split()
     response = requests.get(
-        url=MAI_ENDPOINT+f'{textchange[0]}/{textchange[1]}/',
+        url=MAI_ENDPOINT + f'{textchange[0]}/{textchange[1]}/',
         headers={'Authorization': API_TOKEN},
-        )
+    )
     # добавить обратботку 404 и 500 ошибок сервера
-    return response.json()
+    result = response.json()
+    result_messege: str = ''
+    for res in result:
+        train_serial = res.get('train').get('serial').get('serial')
+        train_number = res.get('train').get('number')
+        mai_data = datetime.datetime.strptime(
+            res.get('maintenance_date'), '%Y-%m-%d')
+        mai_data = mai_data.strftime("%d.%m.%Y")
+        mileage = res.get('mileage')
+        mai_type = res.get('maintenance').get('type')
+        place = res.get('place')
+        result_messege += f'{train_serial}-{train_number} {mai_type} {mai_data} {mileage} {place} \n'
+    return result_messege

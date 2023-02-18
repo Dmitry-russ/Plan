@@ -1,7 +1,7 @@
-from train.models import DoneMaiDate, Train
 from rest_framework import viewsets
-from .permissions import IsStaff
+from train.models import DoneMaiDate, Train
 
+from .permissions import IsStaff
 from .serializers import (DoneMaiDateSerializer, TrainSerializer)
 
 
@@ -13,8 +13,8 @@ class DoneMaiDateViewSet(viewsets.ReadOnlyModelViewSet):
         number = self.kwargs.get("number")
         serial = self.kwargs.get("serial")
         return (DoneMaiDate.objects.
-                filter(train__number=number, train__serial__slug=serial).
-                order_by('-mileage')[:3])
+                    filter(train__number=number, train__serial__slug=serial).
+                    order_by('-mileage')[:3])
 
 
 class TrainViewSet(viewsets.ReadOnlyModelViewSet):

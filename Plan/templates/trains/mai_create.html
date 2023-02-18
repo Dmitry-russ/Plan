@@ -26,29 +26,28 @@
             </button>
             <a type="button" class="btn btn-light"
                href="{% url 'train:mai_list' train.id %}">Вернуться к списку инспекций</a>
-               {% if is_edit %}
-               {% if mai_done.musthave and admin %}
-               <a type="button" class="btn btn-outline-danger" onclick="clicked(event)"
-                      href="{% url 'train:mai_delete' mai_id=mai_done.pk %}">Удалить</a>
-               {% elif not mai_done.musthave and admin %}
-               <a type="button" class="btn btn-danger" onclick="clicked(event)"
-                   href="{% url 'train:mai_delete' mai_id=mai_done.pk %}">ПОМЕЧЕНА Удалить?</a>
-               {% elif mai_done.musthave %}
-               <a type="button" class="btn btn-outline-danger"
-                   href="{% url 'train:mai_delete' mai_id=mai_done.pk %}">Пометить на удаление</a>
-               {% else %}
-               <a type="button" class="btn btn-danger"
-                   href="{% url 'train:mai_delete' mai_id=mai_done.pk %}">ПОМЕЧЕНА НА УДАЛЕНИЕ</a>
-               {% endif %}
-               {% endif %}
+            {% if is_edit %}
+                {% if mai_done.musthave and admin %}
+                    <a type="button" class="btn btn-outline-danger" onclick="clicked(event)"
+                       href="{% url 'train:mai_delete' mai_id=mai_done.pk %}">Удалить</a>
+                {% elif not mai_done.musthave and admin %}
+                    <a type="button" class="btn btn-danger" onclick="clicked(event)"
+                       href="{% url 'train:mai_delete' mai_id=mai_done.pk %}">ПОМЕЧЕНА Удалить?</a>
+                {% elif mai_done.musthave %}
+                    <a type="button" class="btn btn-outline-danger"
+                       href="{% url 'train:mai_delete' mai_id=mai_done.pk %}">Пометить на удаление</a>
+                {% else %}
+                    <a type="button" class="btn btn-danger"
+                       href="{% url 'train:mai_delete' mai_id=mai_done.pk %}">ПОМЕЧЕНА НА УДАЛЕНИЕ</a>
+                {% endif %}
+            {% endif %}
             </form>
         </article>
     </div>
 
     <script>
-        function clicked(e)
-        {
-            if(!confirm('Действительно удалить запись? Запись будет удалена безвозвратно.')) {
+        function clicked(e) {
+            if (!confirm('Действительно удалить запись? Запись будет удалена безвозвратно.')) {
                 e.preventDefault();
             }
         }

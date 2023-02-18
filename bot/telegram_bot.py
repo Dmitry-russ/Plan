@@ -3,12 +3,13 @@ import os
 import sys
 
 from dotenv import load_dotenv
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (CommandHandler, Updater, MessageHandler,
-                          Filters)
+                          Filters, CallbackQueryHandler)
 
+from consts import TRAIN_ENDPOINT, MAI_ENDPOINT, USER_ENDPOINT, USERS
 from getapi import get_token, check_train, finde_mai
 from utils import check_user
-from consts import TRAIN_ENDPOINT, MAI_ENDPOINT, USER_ENDPOINT, USERS
 
 load_dotenv()
 
@@ -29,6 +30,7 @@ def wake_up(update, context):
     name = update.message.chat.first_name
     username = update.effective_chat.username
 
+    # проверка прав доступа
     access = check_user(update, context, USERS)
     if not access:
         return
@@ -44,6 +46,7 @@ def wake_up(update, context):
 def have_massege(update, context):
     """Обработка первичного сообщения о расходе."""
 
+    # проверка прав доступа
     access = check_user(update, context, USERS)
     if not access:
         return
@@ -51,28 +54,43 @@ def have_massege(update, context):
     chat_id = update.effective_chat.id
     text = update.message.text
 
-    if " " in text:
-        result = finde_mai(MAI_ENDPOINT, API_TOKEN, text)
-        context.bot.send_message(
-            chat_id=chat_id,
-            text=result)
-        return
-
     trains = check_train(TRAIN_ENDPOINT, API_TOKEN, text)
-    if len(trains) < 1:
+    if trains is None or len(trains) < 1:
         context.bot.send_message(
             chat_id=chat_id,
             text='Поезд не найден.')
         return
     if len(trains) > 1:
+        keyboard: list = []
+        for train in trains:
+            serial_slug = train.get('serial').get('slug')
+            serial_serial = train.get('serial').get('serial')
+            train_number = train.get('number')
+            keyboard.append([InlineKeyboardButton(f"{serial_serial}-{train_number}",
+                                                  callback_data=f'{serial_slug} {train_number}')])
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        context.bot.send_message(chat_id=chat_id,
+                                 text="Выберете поезд:",
+                                 reply_markup=reply_markup)
         return
     if len(trains) == 1:
         serial = trains[0].get('serial').get('slug')
         text = f'{serial} {text}'
-        result = finde_mai(MAI_ENDPOINT, API_TOKEN, text)
+        result_messege = finde_mai(MAI_ENDPOINT, API_TOKEN, text)
         context.bot.send_message(
             chat_id=chat_id,
-            text=result)
+            text=result_messege)
+
+
+def button(update, context):
+    chat_id = update.effective_chat.id
+    query = update.callback_query
+    text = query.data
+
+    result_messege = finde_mai(MAI_ENDPOINT, API_TOKEN, text)
+    context.bot.send_message(
+        chat_id=chat_id,
+        text=result_messege)
 
 
 def check_tokens() -> bool:
@@ -94,6 +112,7 @@ def main():
 
     updater.dispatcher.add_handler(CommandHandler('start', wake_up))
     updater.dispatcher.add_handler(MessageHandler(Filters.text, have_massege))
+    updater.dispatcher.add_handler(CallbackQueryHandler(button))
     updater.start_polling()
     updater.idle()
 

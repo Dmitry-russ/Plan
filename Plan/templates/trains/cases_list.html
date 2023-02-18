@@ -20,14 +20,15 @@
     {% endfor %}
     <hr>
     <p><a type="button" class="btn btn-light"
-          href="{% url 'train:case_create' train.id %}">Создать новое замечание</a> <a type="button" class="btn btn-light"
-          href="{% url 'train:train_list' %}">Назад к списку поездов</a></p>
+          href="{% url 'train:case_create' train.id %}">Создать новое замечание</a> <a type="button"
+                                                                                       class="btn btn-light"
+                                                                                       href="{% url 'train:train_list' %}">Назад
+        к списку поездов</a></p>
     {% include 'includes/paginator.html' %}
 
     <script>
-        function clicked(e)
-        {
-            if(!confirm('Действительно удалить запись? Запись будет удалена безвозвратно.')) {
+        function clicked(e) {
+            if (!confirm('Действительно удалить запись? Запись будет удалена безвозвратно.')) {
                 e.preventDefault();
             }
         }

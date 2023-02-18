@@ -5,14 +5,16 @@
 
 
 {% block content %}
-{% if main_delete and admin %}
-{% for main in main_delete %}
-<div class="alert alert-danger" role="alert">
-     <a type="button" class="btn btn-outline-dark"
-    href="{% url 'train:mai_detail' mai_id=main.pk %}">Помечена на удаление инспекция {{ main.maintenance.number }} {{ main.maintenance.type }} {{ main.mileage }} поезд {{ main.train }}</a>
-  </div>
-{% endfor %}
-{% endif %}
+    {% if main_delete and admin %}
+        {% for main in main_delete %}
+            <div class="alert alert-danger" role="alert">
+                <a type="button" class="btn btn-outline-dark"
+                   href="{% url 'train:mai_detail' mai_id=main.pk %}">Помечена на удаление
+                    инспекция {{ main.maintenance.number }} {{ main.maintenance.type }} {{ main.mileage }}
+                    поезд {{ main.train }}</a>
+            </div>
+        {% endfor %}
+    {% endif %}
     {% for train in page_obj %}
         <a type="button" class="btn btn-outline-light"
         >{{ train }}</a>

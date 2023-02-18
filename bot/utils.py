@@ -6,6 +6,6 @@ def check_user(update, context, USERS):
         context.bot.send_message(
             chat_id=chat_id,
             text=f'{name} привет! Пользователь не найден. '
-                 f'Доступ запрещен.',)
+                 f'Доступ запрещен.', )
         return False
     return True
