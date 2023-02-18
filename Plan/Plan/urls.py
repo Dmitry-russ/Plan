@@ -6,8 +6,8 @@ from django.urls import include, path
 app_name = 'Plan'
 
 user_patterns = [
-    # path('', include('djoser.urls')),
-    # path('auth/', include('djoser.urls.authtoken')),
+    path('auth/', include('djoser.urls')),
+    path('auth/', include('djoser.urls.jwt')),
     path('password_change/done/',
          PasswordChangeDoneView.as_view(
              template_name='users/password_change_done.html'),

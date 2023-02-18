@@ -1,15 +1,24 @@
-from train.models import DoneMaiDate, Maintenance
+from train.models import Train, DoneMaiDate, Maintenance, Serial
 from rest_framework import serializers
 
 
-# class TrainSerializer(serializers.ModelSerializer):
+class SerialSerializer(serializers.ModelSerializer):
 
-#     author = serializers.SerializerMethodField(read_only=True)
+    class Meta:
+        model = Serial
+        fields = ('serial', 'slug',)
 
-#     class Meta:
-#         model = Train
-#         fields = ('id', 'serial', 'number', 'renter',
-#                   'mileage', 'mileage_date', 'day_mileage',)
+
+class TrainSerializer(serializers.ModelSerializer):
+
+    serial = SerialSerializer(read_only=True)
+
+    class Meta:
+        model = Train
+        fields = ('id', 'serial', 'number', 'renter',
+                  'mileage', 'mileage_date', 'day_mileage',)
+
+
 class MaintenanceSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -20,6 +29,7 @@ class MaintenanceSerializer(serializers.ModelSerializer):
 class DoneMaiDateSerializer(serializers.ModelSerializer):
 
     maintenance = MaintenanceSerializer(read_only=True)
+    train = TrainSerializer(read_only=True)
 
     class Meta:
         model = DoneMaiDate
