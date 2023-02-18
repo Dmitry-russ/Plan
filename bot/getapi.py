@@ -45,7 +45,8 @@ def finde_mai(MAI_ENDPOINT, API_TOKEN, text) -> requests:
             res.get('maintenance_date'), '%Y-%m-%d')
         mai_data = mai_data.strftime("%d.%m.%Y")
         mileage = res.get('mileage')
+        mileage = '{0:,}'.format(mileage).replace(',', ' ')
         mai_type = res.get('maintenance').get('type')
         place = res.get('place')
-        result_messege += f'{train_serial}-{train_number} {mai_type} {mai_data} {mileage} {place} \n'
+        result_messege += f'{train_serial}-{train_number} вид: {mai_type} дата: {mai_data} пробег: {mileage} место: {place} \n\n'
     return result_messege
