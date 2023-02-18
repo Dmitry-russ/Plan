@@ -38,7 +38,7 @@ def wake_up(update, context):
     context.bot.send_message(
         chat_id=chat_id,
         text=f'{name} привет! Введи номер поезда. '
-             f'Только цифры - дальше я разберусь сам.',
+             f'Только цифры (к примеру: 001), дальше я разберусь сам.',
     )
     logging.info(f'User {username}, {chat_id} is starting bot')
 
