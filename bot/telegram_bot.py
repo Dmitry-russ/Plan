@@ -16,10 +16,11 @@ load_dotenv()
 TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_TOKEN')
 USER = os.getenv('USER')
 PASSWORD = os.getenv('PASSWORD')
+# MY_CHAT_ID =
 
-#  получаем доступ к api
-#  добавь обработку ошибок!
+# декоратор на проверку времени токена перед запуском запрсов???
 API_TOKEN = get_token(USER_ENDPOINT, USER, PASSWORD)
+
 logger = logging.getLogger()
 
 
@@ -41,10 +42,12 @@ def wake_up(update, context):
              f'Только цифры (к примеру: 001), дальше я разберусь сам.',
     )
     logging.info(f'User {username}, {chat_id} is starting bot')
+    # send_me_messege():
 
 
 def have_massege(update, context):
-    """Обработка первичного сообщения о расходе."""
+    """Обработка входящего сообщения."""
+    # try:
 
     # проверка прав доступа
     access = check_user(update, context, USERS)
@@ -66,8 +69,9 @@ def have_massege(update, context):
             serial_slug = train.get('serial').get('slug')
             serial_serial = train.get('serial').get('serial')
             train_number = train.get('number')
-            keyboard.append([InlineKeyboardButton(f"{serial_serial}-{train_number}",
-                                                  callback_data=f'{serial_slug} {train_number}')])
+            keyboard.append([InlineKeyboardButton(
+                f"{serial_serial}-{train_number}",
+                callback_data=f'{serial_slug} {train_number}')])
         reply_markup = InlineKeyboardMarkup(keyboard)
         context.bot.send_message(chat_id=chat_id,
                                  text="Выберете поезд:",
@@ -80,17 +84,21 @@ def have_massege(update, context):
         context.bot.send_message(
             chat_id=chat_id,
             text=result_messege)
+    # except Exception as error:
+        # message = f'Сбой в работе программы: {error}'
+        # context.bot.send_message(
+        # chat_id=chat_id,
+        # text=result_messege)
 
 
 def button(update, context):
+    """Обработка действий нажатия кнопки."""
     chat_id = update.effective_chat.id
     query = update.callback_query
     text = query.data
 
     result_messege = finde_mai(MAI_ENDPOINT, API_TOKEN, text)
-    context.bot.send_message(
-        chat_id=chat_id,
-        text=result_messege)
+    context.bot.send_message(chat_id=chat_id, text=result_messege)
 
 
 def check_tokens() -> bool:
@@ -110,9 +118,14 @@ def main():
 
     updater = Updater(token=TELEGRAM_BOT_TOKEN)
 
+    # try:
     updater.dispatcher.add_handler(CommandHandler('start', wake_up))
     updater.dispatcher.add_handler(MessageHandler(Filters.text, have_massege))
     updater.dispatcher.add_handler(CallbackQueryHandler(button))
+    # except Exception as error:
+    # message = f'Сбой в работе программы: {error}'
+
+    # finally:
     updater.start_polling()
     updater.idle()
 

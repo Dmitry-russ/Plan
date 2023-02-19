@@ -13,8 +13,8 @@ class DoneMaiDateViewSet(viewsets.ReadOnlyModelViewSet):
         number = self.kwargs.get("number")
         serial = self.kwargs.get("serial")
         return (DoneMaiDate.objects.
-                    filter(train__number=number, train__serial__slug=serial).
-                    order_by('-mileage')[:3])
+                filter(train__number=number, train__serial__slug=serial).
+                order_by('-mileage')[:3])
 
 
 class TrainViewSet(viewsets.ReadOnlyModelViewSet):

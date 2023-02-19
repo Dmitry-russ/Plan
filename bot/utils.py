@@ -9,3 +9,11 @@ def check_user(update, context, USERS):
                  f'Доступ запрещен.', )
         return False
     return True
+
+
+def send_me_messege():
+    pass
+
+
+def check_token_time(previos_date):
+    pass

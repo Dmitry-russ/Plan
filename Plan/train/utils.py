@@ -9,54 +9,41 @@ def page_control(request, objects, count):
     return paginator.get_page(page_number)
 
 
+def dict_create(main: Maintenance, donemai: DoneMaiDate, k, result):
+    mileage = '{0:,}'.format(donemai[0].mileage).replace(',', ' ')
+    check = {
+        "mileage": mileage,
+        "number": donemai[0].maintenance.number,
+        "type": donemai[0].maintenance.type,
+        "maintenance_date": donemai[0].maintenance_date,
+        "place": donemai[0].place,
+        "comment": donemai[0].comment,
+        "done": True,
+        "pk": donemai[0].pk,
+        "author": donemai[0].author,
+        "musthave": donemai[0].musthave,
+    }
+    result.append(check)
+
+
 def result_mai_list(main: Maintenance, donemai: DoneMaiDate):
     """Функция расчета необходимых к выводу проведенных ТО."""
     i: int = 0  # счетчик выполненных инспекций
     k: int = 0  # счетчик будущих инспекций
-    flag: bool = True  # дополнительный флаг
     result: list = []  # итоговый список
     while k < len(main):
-        #  i = 0
-        #  flag = True
-        #  while i < len(donemai) and flag:
         if donemai and donemai[0].maintenance == main[k]:
-            check = {
-                "mileage": donemai[0].mileage,
-                "number": donemai[0].maintenance.number,
-                "type": donemai[0].maintenance.type,
-                "maintenance_date": donemai[0].maintenance_date,
-                "place": donemai[0].place,
-                "comment": donemai[0].comment,
-                "done": True,
-                "pk": donemai[0].pk,
-                "author": donemai[0].author,
-                "musthave": donemai[0].musthave,
-            }
-            result.append(check)
+            dict_create(main, donemai, k, result)
             k += 1
             donemai.pop(i)
-            #  flag = False
-        elif donemai and donemai[0].maintenance.order == False:
-            check = {
-                "mileage": donemai[0].mileage,
-                "number": donemai[0].maintenance.number,
-                "type": donemai[0].maintenance.type,
-                "maintenance_date": donemai[0].maintenance_date,
-                "place": donemai[0].place,
-                "comment": donemai[0].comment,
-                "done": True,
-                "pk": donemai[0].pk,
-                "author": donemai[0].author,
-                "musthave": donemai[0].musthave,
-            }
-            result.append(check)
+        elif donemai and donemai[0].maintenance.order is False:
+            dict_create(main, donemai, k, result)
             donemai.pop(0)
-            #  flag = False
         else:
             check = {
                 "number": main[k].number,
                 "type": main[k].type,
-                "mileage": main[k].mileage,
+                "mileage": '{0:,}'.format(main[k].mileage).replace(',', ' '),
                 "maintenance_date": "-",
                 "place": "-",
                 "comment": "не проводилась",
