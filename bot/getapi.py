@@ -77,6 +77,8 @@ def finde_case(CASE_ENDPOINT, API_TOKEN, text):
     check_server(response)
     result = response.json()
     result_messege: str = ''
+    if len(result) == 0:
+        return 'Нет замечаний'
     for res in result:
         name = res.get('name')
         result_messege += f'{name}\n'
