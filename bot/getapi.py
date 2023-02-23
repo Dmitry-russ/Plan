@@ -49,10 +49,10 @@ def finde_mai(MAI_ENDPOINT, API_TOKEN, text) -> requests:
             train_number = res.get('train').get('number')
             train_mileage = res.get('train').get('mileage')
             train_mileage_date = res.get('train').get('mileage_date')
-
-            train_mileage_date = datetime.datetime.strptime(
-                res.get('train').get('mileage_date'), '%Y-%m-%d')
-            train_mileage_date = train_mileage_date.strftime("%d.%m.%Y")
+            if train_mileage_date:
+                train_mileage_date = datetime.datetime.strptime(
+                    res.get('train').get('mileage_date'), '%Y-%m-%d')
+                train_mileage_date = train_mileage_date.strftime("%d.%m.%Y")
 
             train_renter = res.get('train').get('renter')
             result_messege += f'{train_serial}-{train_number} \n'
