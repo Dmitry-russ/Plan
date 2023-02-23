@@ -4,6 +4,8 @@ import requests
 
 from http import HTTPStatus
 
+from utils import case_buttons
+
 
 def check_server(response):
     if response.status_code != HTTPStatus.OK:
@@ -45,6 +47,7 @@ def finde_mai(MAI_ENDPOINT, API_TOKEN, text) -> requests:
     first_run_check = True
     for res in result:
         if first_run_check:
+            train_serial_slug = res.get('train').get('serial').get('slug')
             train_serial = res.get('train').get('serial').get('serial')
             train_number = res.get('train').get('number')
             train_mileage = res.get('train').get('mileage')
@@ -69,7 +72,10 @@ def finde_mai(MAI_ENDPOINT, API_TOKEN, text) -> requests:
         place = res.get('place')
         result_messege += (f'Вид ТО: {mai_type} \n дата: {mai_data} \n пробег:'
                            f' {mileage} \n место: {place} \n\n')
-    return result_messege
+        reply_markup = case_buttons(train_serial,
+                                    train_number,
+                                    train_serial_slug,)
+    return result_messege, reply_markup
 
 
 def finde_case(CASE_ENDPOINT, API_TOKEN, text):

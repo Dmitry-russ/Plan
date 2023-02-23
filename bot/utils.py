@@ -14,15 +14,13 @@ def check_user(update, context, USERS):
     return True
 
 
-def case_buttons(context, serial_serial, train_number, serial_slug, chat_id):
+def case_buttons(serial_serial, train_number, serial_slug,):
     keyboard: list = []
     keyboard.append([InlineKeyboardButton(
                 f"{serial_serial}-{train_number}",
                 callback_data=f'{serial_slug} {train_number} case')])
     reply_markup = InlineKeyboardMarkup(keyboard)
-    context.bot.send_message(chat_id=chat_id,
-                             text='Вывести замечания по поезду:',
-                             reply_markup=reply_markup)
+    return reply_markup
 
 
 def send_me_messege(context, MY_CHAT_ID, messege):

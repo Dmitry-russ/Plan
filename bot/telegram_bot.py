@@ -87,12 +87,13 @@ def have_massege(update, context):
         serial_serial = trains[0].get('serial').get('serial')
         number = trains[0].get('number')
         text = f'{serial_slug} {text}'
-        result_messege = finde_mai(MAI_ENDPOINT, API_TOKEN, text)
-
+        result_messege, reply_markup = finde_mai(MAI_ENDPOINT, API_TOKEN, text)
         context.bot.send_message(
             chat_id=chat_id,
             text=result_messege)
-        case_buttons(context, serial_serial, number, serial_slug, chat_id)
+        context.bot.send_message(chat_id=chat_id,
+                             text='Вывести замечания по поезду:',
+                             reply_markup=reply_markup)
     # except Exception as error:
         # message = f'Сбой в работе программы: {error}'
         # context.bot.send_message(
@@ -106,8 +107,11 @@ def button(update, context):
     query = update.callback_query
     text = query.data
     if 'case' not in text:
-        result_messege = finde_mai(MAI_ENDPOINT, API_TOKEN, text)
+        result_messege, reply_markup = finde_mai(MAI_ENDPOINT, API_TOKEN, text)
         context.bot.send_message(chat_id=chat_id, text=result_messege)
+        context.bot.send_message(chat_id=chat_id,
+                                 text='Вывести замечания по поезду:',
+                                 reply_markup=reply_markup)
         return
     result_messege = finde_case(CASE_ENDPOINT, API_TOKEN, text)
     context.bot.send_message(chat_id=chat_id, text=result_messege)
