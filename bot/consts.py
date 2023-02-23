@@ -9,4 +9,4 @@ USER_ENDPOINT: str = 'http://194.187.122.3/auth/jwt/create/'
 # USER_ENDPOINT: str = 'http://127.0.0.1:8000/auth/jwt/create/'
 
 
-USERS: list = ['dmitrypetukhovekb', 'smnvkrll', 'nkiryuhin93', 'Baggravation']
+USERS: list = ['dmitrypetukhovekb', 'smnvkrll', 'nkiryuhin93', 'Baggravation', 'Rusnik49',]
