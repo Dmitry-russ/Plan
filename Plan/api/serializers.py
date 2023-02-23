@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from train.models import Train, DoneMaiDate, Maintenance, Serial
+from train.models import Train, DoneMaiDate, Maintenance, Serial, Cases
 
 
 class SerialSerializer(serializers.ModelSerializer):
@@ -30,3 +30,11 @@ class DoneMaiDateSerializer(serializers.ModelSerializer):
     class Meta:
         model = DoneMaiDate
         exclude = ('musthave',)
+
+
+class CaseSerializer(serializers.ModelSerializer):
+    train = TrainSerializer(read_only=True)
+
+    class Meta:
+        model = Cases
+        fields = ('author', 'train', 'name', 'text',)

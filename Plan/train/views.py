@@ -37,6 +37,29 @@ def train_create(request):
 
 
 @login_required
+def train_detail(request, train_id):
+    """Изменение поезда."""
+
+    train = get_object_or_404(Train, id=train_id)
+    form = NewTrainForm(
+        request.POST or None,
+        files=request.FILES or None,
+        instance=train)
+    if form.is_valid():
+        train.save()
+        form = NewTrainForm(
+            request.POST or None,
+            files=request.FILES or None,
+            instance=train)
+        return redirect('train:train_list')
+
+    context = {'form': form,
+               'train': train,
+               'is_edit': True, }
+    return render(request, 'trains/train_create.html', context)
+
+
+@login_required
 def cases_list(request, train_id):
     """Вывод списка замечаний на поезде."""
 
@@ -133,6 +156,17 @@ def mai_delete(request, mai_id):
     mai.musthave = False
     mai.save()
     return redirect('train:mai_detail', mai.id)
+
+
+@login_required
+def mai_not_delete(request, mai_id):
+    """Отмена удаления админом."""
+
+    mai = get_object_or_404(DoneMaiDate, id=mai_id)
+    if request.user.is_staff:
+        mai.musthave = True
+        mai.save()
+        return redirect('train:mai_detail', mai.id)
 
 
 @login_required

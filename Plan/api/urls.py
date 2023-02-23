@@ -1,12 +1,15 @@
 from django.urls import include, path
 from rest_framework import routers
 
-from .views import DoneMaiDateViewSet, TrainViewSet
+from .views import DoneMaiDateViewSet, TrainViewSet, CaseViewSet
 
 v1_router = routers.DefaultRouter()
 v1_router.register(r'train/mai/(?P<serial>[\w]+)/(?P<number>[\w]+)',
                    DoneMaiDateViewSet,
                    basename='mai')
+v1_router.register(r'train/case/(?P<serial>[\w]+)/(?P<number>[\w]+)',
+                   CaseViewSet,
+                   basename='case')
 v1_router.register(r'train/list/(?P<number>[\w]+)',
                    TrainViewSet,
                    basename='list')

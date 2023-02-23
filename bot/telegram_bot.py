@@ -7,16 +7,17 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (CommandHandler, Updater, MessageHandler,
                           Filters, CallbackQueryHandler)
 
-from consts import TRAIN_ENDPOINT, MAI_ENDPOINT, USER_ENDPOINT, USERS
-from getapi import get_token, check_train, finde_mai
-from utils import check_user
+from consts import (TRAIN_ENDPOINT, MAI_ENDPOINT, USER_ENDPOINT, USERS,
+                    CASE_ENDPOINT)
+from getapi import get_token, check_train, finde_mai, finde_case
+from utils import check_user, send_me_messege, case_buttons
 
 load_dotenv()
 
 TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_TOKEN')
 USER = os.getenv('USER')
 PASSWORD = os.getenv('PASSWORD')
-# MY_CHAT_ID =
+MY_CHAT_ID = os.getenv('MY_CHAT_ID')
 
 # декоратор на проверку времени токена перед запуском запрсов???
 API_TOKEN = get_token(USER_ENDPOINT, USER, PASSWORD)
@@ -33,16 +34,19 @@ def wake_up(update, context):
 
     # проверка прав доступа
     access = check_user(update, context, USERS)
+    #  exception...
     if not access:
         return
 
     context.bot.send_message(
         chat_id=chat_id,
         text=f'{name} привет! Введи номер поезда. '
-             f'Только цифры (к примеру: 001), дальше я разберусь сам.',
+             f'Только цифры (к примеру: 001) - '
+             f'я выведу три последние инспекци.',
     )
-    logging.info(f'User {username}, {chat_id} is starting bot')
-    # send_me_messege():
+    messege = f'User {username}, {chat_id} is starting bot.'
+    logging.info(messege)
+    send_me_messege(context, MY_CHAT_ID, messege)
 
 
 def have_massege(update, context):
@@ -51,6 +55,7 @@ def have_massege(update, context):
 
     # проверка прав доступа
     access = check_user(update, context, USERS)
+    #  exception...
     if not access:
         return
 
@@ -78,12 +83,16 @@ def have_massege(update, context):
                                  reply_markup=reply_markup)
         return
     if len(trains) == 1:
-        serial = trains[0].get('serial').get('slug')
-        text = f'{serial} {text}'
+        serial_slug = trains[0].get('serial').get('slug')
+        serial_serial = trains[0].get('serial').get('serial')
+        number = trains[0].get('number')
+        text = f'{serial_slug} {text}'
         result_messege = finde_mai(MAI_ENDPOINT, API_TOKEN, text)
+
         context.bot.send_message(
             chat_id=chat_id,
             text=result_messege)
+        case_buttons(context, serial_serial, number, serial_slug, chat_id)
     # except Exception as error:
         # message = f'Сбой в работе программы: {error}'
         # context.bot.send_message(
@@ -96,8 +105,11 @@ def button(update, context):
     chat_id = update.effective_chat.id
     query = update.callback_query
     text = query.data
-
-    result_messege = finde_mai(MAI_ENDPOINT, API_TOKEN, text)
+    if 'case' not in text:
+        result_messege = finde_mai(MAI_ENDPOINT, API_TOKEN, text)
+        context.bot.send_message(chat_id=chat_id, text=result_messege)
+        return
+    result_messege = finde_case(CASE_ENDPOINT, API_TOKEN, text)
     context.bot.send_message(chat_id=chat_id, text=result_messege)
 
 

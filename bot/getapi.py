@@ -5,15 +5,19 @@ import requests
 from http import HTTPStatus
 
 
+def check_server(response):
+    if response.status_code != HTTPStatus.OK:
+        raise ConnectionError('Сервер недоступен.')
+
+
 def get_token(USER_ENDPOINT, USER, PASSWORD) -> str:
     """Функция получения токена для доступа к api."""
     response = requests.post(
         url=USER_ENDPOINT,
         data={'username': USER, 'password': PASSWORD}
-    ).json()
-    if response.status_code != HTTPStatus.OK:
-        raise ConnectionError('Сервер недоступен.')
-    return f'Bearer {response.get("access")}'
+    )
+    check_server(response)
+    return f'Bearer {response.json().get("access")}'
 
 
 def check_train(TRAIN_ENDPOINT, API_TOKEN, text) -> list:
@@ -22,8 +26,7 @@ def check_train(TRAIN_ENDPOINT, API_TOKEN, text) -> list:
         url=TRAIN_ENDPOINT + f'{text}/',
         headers={'Authorization': API_TOKEN},
     )
-    if response.status_code != HTTPStatus.OK:
-        raise ConnectionError('Сервер недоступен.')
+    check_server(response)
     return response.json()
 
 
@@ -34,15 +37,24 @@ def finde_mai(MAI_ENDPOINT, API_TOKEN, text) -> requests:
         url=MAI_ENDPOINT + f'{textchange[0]}/{textchange[1]}/',
         headers={'Authorization': API_TOKEN},
     )
-    if response.status_code != HTTPStatus.OK:
-        raise ConnectionError('Сервер недоступен.')
+    check_server(response)
     result = response.json()
     if len(result) == 0:
         return 'Инспекций еще не проводилось.'
     result_messege: str = ''
+    first_run_check = True
     for res in result:
-        train_serial = res.get('train').get('serial').get('serial')
-        train_number = res.get('train').get('number')
+        if first_run_check:
+            train_serial = res.get('train').get('serial').get('serial')
+            train_number = res.get('train').get('number')
+            train_mileage = res.get('train').get('mileage')
+            train_mileage_date = res.get('train').get('mileage_date')
+            train_renter = res.get('train').get('renter')
+            result_messege += f'{train_serial}-{train_number} \n'
+            result_messege += f'Арендатор: {train_renter} \n'
+            result_messege += (f'Пробег: {train_mileage} на дату: '
+                               f'{train_mileage_date} \n\n')
+        first_run_check = False
         mai_data = datetime.datetime.strptime(
             res.get('maintenance_date'), '%Y-%m-%d')
         mai_data = mai_data.strftime("%d.%m.%Y")
@@ -50,7 +62,22 @@ def finde_mai(MAI_ENDPOINT, API_TOKEN, text) -> requests:
         mileage = '{0:,}'.format(mileage).replace(',', ' ')
         mai_type = res.get('maintenance').get('type')
         place = res.get('place')
-        result_messege += (f'{train_serial}-{train_number} '
-                           f'вид: {mai_type} дата: {mai_data} пробег: '
-                           f'{mileage} место: {place} \n\n')
+        result_messege += (f'Вид ТО: {mai_type} \n дата: {mai_data} \n пробег:'
+                           f' {mileage} \n место: {place} \n\n')
+    return result_messege
+
+
+def finde_case(CASE_ENDPOINT, API_TOKEN, text):
+    textchange = text.split()
+    textchange.pop()
+    response = requests.get(
+        url=CASE_ENDPOINT + f'{textchange[0]}/{textchange[1]}/',
+        headers={'Authorization': API_TOKEN},
+    )
+    check_server(response)
+    result = response.json()
+    result_messege: str = ''
+    for res in result:
+        name = res.get('name')
+        result_messege += f'{name}\n'
     return result_messege

@@ -33,6 +33,8 @@
                 {% elif not mai_done.musthave and admin %}
                     <a type="button" class="btn btn-danger" onclick="clicked(event)"
                        href="{% url 'train:mai_delete' mai_id=mai_done.pk %}">ПОМЕЧЕНА Удалить?</a>
+                       <a type="button" class="btn btn-light"
+                       href="{% url 'train:mai_not_delete' mai_id=mai_done.pk %}">Снять пометку об удалении</a>    
                 {% elif mai_done.musthave %}
                     <a type="button" class="btn btn-outline-danger"
                        href="{% url 'train:mai_delete' mai_id=mai_done.pk %}">Пометить на удаление</a>
