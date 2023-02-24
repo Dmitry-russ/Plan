@@ -85,15 +85,14 @@ def have_massege(update, context):
     if len(trains) == 1:
         serial_slug = trains[0].get('serial').get('slug')
         serial_serial = trains[0].get('serial').get('serial')
-        number = trains[0].get('number')
         text = f'{serial_slug} {text}'
         result_messege, reply_markup = finde_mai(MAI_ENDPOINT, API_TOKEN, text)
         context.bot.send_message(
             chat_id=chat_id,
             text=result_messege)
         context.bot.send_message(chat_id=chat_id,
-                             text='Вывести замечания по поезду:',
-                             reply_markup=reply_markup)
+                                 text='Вывести замечания по поезду:',
+                                 reply_markup=reply_markup)
     # except Exception as error:
         # message = f'Сбой в работе программы: {error}'
         # context.bot.send_message(

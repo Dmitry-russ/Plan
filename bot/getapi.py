@@ -56,12 +56,12 @@ def finde_mai(MAI_ENDPOINT, API_TOKEN, text) -> requests:
                 train_mileage_date = datetime.datetime.strptime(
                     res.get('train').get('mileage_date'), '%Y-%m-%d')
                 train_mileage_date = train_mileage_date.strftime("%d.%m.%Y")
-
             train_renter = res.get('train').get('renter')
             result_messege += f'{train_serial}-{train_number} \n'
             result_messege += f'Арендатор: {train_renter} \n'
             result_messege += (f'Пробег: {train_mileage} на дату: '
                                f'{train_mileage_date} \n\n')
+
         first_run_check = False
         mai_data = datetime.datetime.strptime(
             res.get('maintenance_date'), '%Y-%m-%d')
@@ -70,8 +70,12 @@ def finde_mai(MAI_ENDPOINT, API_TOKEN, text) -> requests:
         mileage = '{0:,}'.format(mileage).replace(',', ' ')
         mai_type = res.get('maintenance').get('type')
         place = res.get('place')
-        result_messege += (f'Вид ТО: {mai_type} \n дата: {mai_data} \n пробег:'
-                           f' {mileage} \n место: {place} \n\n')
+        result_messege += f'Вид ТО: {mai_type}\n'
+        if train_mileage:
+            mileage_diff = int(train_mileage) - int(res.get('mileage'))
+            result_messege += f' пробег от ТО: {mileage_diff}\n'
+        result_messege += (f' дата: {mai_data}\n пробег:'
+                           f' {mileage}\n место: {place}\n\n')
         reply_markup = case_buttons(train_serial,
                                     train_number,
                                     train_serial_slug,)
