@@ -51,6 +51,7 @@ def finde_mai(MAI_ENDPOINT, API_TOKEN, text) -> requests:
             train_serial = res.get('train').get('serial').get('serial')
             train_number = res.get('train').get('number')
             train_mileage = res.get('train').get('mileage')
+            train_mileage = '{0:,}'.format(train_mileage).replace(',', ' ')
             train_mileage_date = res.get('train').get('mileage_date')
             if train_mileage_date:
                 train_mileage_date = datetime.datetime.strptime(
@@ -72,7 +73,9 @@ def finde_mai(MAI_ENDPOINT, API_TOKEN, text) -> requests:
         place = res.get('place')
         result_messege += f'Вид ТО: {mai_type}\n'
         if train_mileage:
-            mileage_diff = int(train_mileage) - int(res.get('mileage'))
+            mileage_diff = (int(res.get('train').get('mileage')) -
+                            int(res.get('mileage')))
+            mileage_diff = '{0:,}'.format(mileage_diff).replace(',', ' ')
             result_messege += f' пробег от ТО: {mileage_diff}\n'
         result_messege += (f' дата: {mai_data}\n пробег:'
                            f' {mileage}\n место: {place}\n\n')

@@ -10,7 +10,7 @@ from telegram.ext import (CommandHandler, Updater, MessageHandler,
 from consts import (TRAIN_ENDPOINT, MAI_ENDPOINT, USER_ENDPOINT, USERS,
                     CASE_ENDPOINT)
 from getapi import get_token, check_train, finde_mai, finde_case
-from utils import check_user, send_me_messege, case_buttons
+from utils import check_user, send_me_messege
 
 load_dotenv()
 
