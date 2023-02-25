@@ -1,5 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
+from django.http import HttpResponse
+
+import tablib
 
 from .forms import CasesForm, NewTrainForm, NewMaiForm, NewMaiFormFromList
 from .models import Cases, Train, DoneMaiDate, Maintenance
@@ -238,3 +241,36 @@ def mai_detail(request, mai_id):
                'mai_type': mai_done.maintenance,
                'admin': request.user.is_staff, }
     return render(request, 'trains/mai_create.html', context)
+
+
+@login_required
+def mai_export(request, train_id=None):
+    if train_id is not None:
+        maintenance = DoneMaiDate.objects.filter(train__id=train_id)
+    else:
+        maintenance = DoneMaiDate.objects.all().order_by('train')
+    headers = ('Поезд',
+               'Вид ТО',
+               'Дата',
+               'Пробег',
+               'Место',
+               'Комментарий',)
+    data = []
+    data = tablib.Dataset(*data, headers=headers)
+    for mai in maintenance:
+        data.append([f'{mai.train.serial.serial}-{mai.train.number}',
+                     mai.maintenance.type,
+                     mai.maintenance_date,
+                     mai.mileage,
+                     mai.place,
+                     mai.comment, ])
+    response = HttpResponse(
+        data.export('xls'),
+        content_type='application/vnd.ms-excel;charset=utf-8')
+    if train_id:
+        text = (f'attachment; '
+                f'filename={mai.train.serial.slug}-{mai.train.number}.xls')
+    else:
+        text = "attachment; filename=All.xls"
+    response['Content-Disposition'] = text
+    return response

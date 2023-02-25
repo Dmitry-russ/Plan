@@ -5,6 +5,8 @@
 {% block content %}
     <p><a type="button" class="btn btn-light"
           href="{% url 'train:train_list' %}">Назад к списку поездов</a>
+          <a type="button" class="btn btn-light"
+          href="{% url 'train:mai_export' train_id=train.id %}">Выгрузить в Excel</a>
     </p>
 
     <p>
@@ -77,5 +79,7 @@
 
     <p><a type="button" class="btn btn-light"
           href="{% url 'train:train_list' %}">Назад к списку поездов</a>
+       <a type="button" class="btn btn-light"
+          href="{% url 'train:mai_export' train_id=train.id %}">Выгрузить в Excel</a>
         {% include 'includes/paginator.html' %}
 {% endblock %}

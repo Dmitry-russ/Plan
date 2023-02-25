@@ -15,6 +15,9 @@
             </div>
         {% endfor %}
     {% endif %}
+    <a type="button" class="btn btn-outline-light"
+    href="{% url 'train:mai_export_all' %}">Выгрузить все инспекции в Excel</a>
+    <hr>
     {% for train in page_obj %}
         <a type="button" class="btn btn-outline-light" 
            href="{% url 'train:train_detail' train.id %}"

@@ -4,7 +4,7 @@ from django.urls import include, path
 from .views import (train_list, cases_list, case_detail,
                     case_create, train_create, case_delete,
                     mai_list, mai_create, mai_detail, mai_create_from_list,
-                    mai_delete, train_detail, mai_not_delete)
+                    mai_delete, train_detail, mai_not_delete, mai_export,)
 
 app_name = 'train'
 urlpatterns = [
@@ -19,11 +19,15 @@ urlpatterns = [
     path('train/mai/<int:train_id>/', mai_list, name='mai_list'),
     path('train/mai/create/<int:train_id>/', mai_create, name='mai_create'),
     path('train/mai/delete/<int:mai_id>/', mai_delete, name='mai_delete'),
-    path('train/mai/notdelete/<int:mai_id>/', mai_not_delete, name='mai_not_delete'),
+    path('train/mai/notdelete/<int:mai_id>/',
+         mai_not_delete,
+         name='mai_not_delete'),
     path('train/mai/create/<int:train_id>/<int:mai_id>/',
          mai_create_from_list,
          name='mai_create_from_list'),
     path('train/mai/detail/<int:mai_id>/', mai_detail, name='mai_detail'),
+    path('train/mai/export/<int:train_id>/', mai_export, name='mai_export'),
+    path('train/mai/export/all/', mai_export, name='mai_export_all'),
     path('api/', include('api.urls')),
     path('admin/', admin.site.urls),
 ]
