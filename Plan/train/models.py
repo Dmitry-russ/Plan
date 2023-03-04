@@ -277,6 +277,10 @@ class Cases(CreatedModel):
         verbose_name="Полное описание",
         blank=True,
     )
+    file = models.FileField(blank=True,
+                            null=True,
+                            upload_to='cases/',
+                            verbose_name="Прикрепленный документ", )
 
 
 class Image(models.Model):

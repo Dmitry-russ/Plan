@@ -6,9 +6,11 @@ from .models import Train, Cases, DoneMaiDate
 
 
 class CasesForm(forms.ModelForm):
+    file = forms.FileField(required=False)
+
     class Meta:
         model = Cases
-        fields = ('name', 'text',)
+        fields = ('name', 'text', 'file',)
 
 
 class NewTrainForm(forms.ModelForm):

@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.http import HttpResponse
+from django.conf import settings
 
 import tablib
 
@@ -9,6 +10,7 @@ from .models import Cases, Train, DoneMaiDate, Maintenance
 from .utils import page_control, result_mai_list
 
 PAGE_LIST = 40
+MEDIA_URL = settings.MEDIA_URL
 
 
 @login_required
@@ -91,9 +93,10 @@ def case_detail(request, case_id):
             request.POST or None,
             files=request.FILES or None,
             instance=case)
-
+        return redirect('train:case_detail', case_id)
     context = {'form': form,
-               'case': case, }
+               'case': case,
+               'media': MEDIA_URL, }
     return render(request, 'trains/case_detail.html', context)
 
 
