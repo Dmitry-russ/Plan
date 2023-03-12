@@ -8,7 +8,8 @@ from utils import case_buttons
 
 def check_server(response):
     if response.status_code != HTTPStatus.OK:
-        raise ConnectionError('Ошибка обработки запроса на сервере')
+        raise ConnectionError('Ошибка обработки запроса на сервере.'
+                              'Попробуйте повторить запрос.')
 
 
 def get_token(USER_ENDPOINT, USER, PASSWORD) -> str:

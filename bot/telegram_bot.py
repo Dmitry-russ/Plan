@@ -54,7 +54,8 @@ def error_handler(update, context):
     """Обработка ошибок."""
     username = update.effective_chat.username
     messege_for_me = f'Ошибка: {str(context.error)}\n Пользователь: {username}'
-    messege = 'Ошибка обработки запроса. Обратитесь к администратору.'
+    messege = ('Ошибка обработки запроса. '
+               'Обратитесь к администратору или попробуйте еще раз.')
     if str(context.error) == 'Timed out':
         messege = 'Ошибка Timed out. Повторите запрос.'
     user_chat_id = update.effective_chat.id
