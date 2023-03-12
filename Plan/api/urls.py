@@ -7,6 +7,10 @@ v1_router = routers.DefaultRouter()
 v1_router.register(r'train/mai/(?P<serial>[\w]+)/(?P<number>[\w]+)',
                    DoneMaiDateViewSet,
                    basename='mai')
+# v1_router.register(r'train/mai/(?P<serial>[\w]+)/(?P<number>[\w]+)',
+#                    DoneMaiDateViewSet,
+#                    basename='mai')
+
 v1_router.register(r'train/maintenance/(?P<number>[\w]+)',
                    MaiNumViewSet,
                    basename='maintenance')

@@ -51,7 +51,7 @@ def error_handler(update, context):
     messege_for_me = f'Ошибка: {str(context.error)}\n Пользователь: {username}'
     messege = 'Ошибка обработки запроса. Обратитесь к администратору.'
     if str(context.error) == 'Timed out':
-        messege = 'Ошибка библиотеки telegram. Повторите запрос.'
+        messege = 'Ошибка Timed out. Повторите запрос.'
     user_chat_id = update.effective_chat.id
     context.bot.send_message(chat_id=user_chat_id,
                              text=messege)
