@@ -7,9 +7,11 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (CommandHandler, Updater, MessageHandler,
                           Filters, CallbackQueryHandler)
 
+from botengine import summerwinter
 from consts import (TRAIN_ENDPOINT, MAI_ENDPOINT, USER_ENDPOINT, USERS,
-                    CASE_ENDPOINT, MAI_NEXT_ENDPOINT)
-from getapi import get_token, check_train, finde_mai, finde_case
+                    CASE_ENDPOINT, MAI_NEXT_ENDPOINT, TRAIN_ALL_ENDPOINT)
+from getapi import (get_token, check_train,
+                    finde_mai, finde_case, )
 from utils import check_user, send_me_messege
 
 load_dotenv()
@@ -31,16 +33,19 @@ def wake_up(update, context):
     chat_id = update.effective_chat.id
     name = update.message.chat.first_name
     username = update.effective_chat.username
-
+    logging.info(f'Пользователь {username} пытается запустить бот.')
     check_user(update, context, USERS)
 
     context.bot.send_message(
         chat_id=chat_id,
         text=f'{name} привет! Введи номер поезда. '
              f'Только цифры (к примеру: 001) - '
-             f'я выведу три последние инспекци.',
+             f'я выведу три последние инспекци.'
+             f'\n\nДоступные отчеты:'
+             f'\n/summer - отчет по переводам в лето'
+             f'\n/winter - отчет по переводам в зиму',
     )
-    messege = f'User {username}, {chat_id} is starting bot.'
+    messege = f'Пользователь {username}, чат {chat_id}, запустил бот.'
     logging.info(messege)
     send_me_messege(context, MY_CHAT_ID, messege)
 
@@ -53,6 +58,7 @@ def error_handler(update, context):
     if str(context.error) == 'Timed out':
         messege = 'Ошибка Timed out. Повторите запрос.'
     user_chat_id = update.effective_chat.id
+    logging.critical(f'{messege_for_me}')
     context.bot.send_message(chat_id=user_chat_id,
                              text=messege)
     send_me_messege(context, MY_CHAT_ID, messege_for_me)
@@ -64,8 +70,7 @@ def have_massege(update, context):
     text = update.message.text
 
     username = update.effective_chat.username
-    messege_for_me = f'Пользователь {username}, {chat_id} запросил: {text}'
-    send_me_messege(context, MY_CHAT_ID, messege_for_me)
+    logging.info(f'Пользователь {username}, чат {chat_id}, запросил: {text}')
 
     trains = check_train(TRAIN_ENDPOINT, API_TOKEN, text)
     if trains is None or len(trains) < 1:
@@ -101,6 +106,28 @@ def have_massege(update, context):
         context.bot.send_message(chat_id=chat_id,
                                  text='Вывести замечания по поезду:',
                                  reply_markup=reply_markup)
+
+
+def summer(update, context):
+    """Функция отчет по лету."""
+
+    logging.info(f'Пользователь {update.effective_chat.username},'
+                 f'чат {update.effective_chat.id}, запросил: лето')
+
+    text = 'summer'
+    summerwinter(update, context, text,
+                 TRAIN_ALL_ENDPOINT, MAI_ENDPOINT, API_TOKEN)
+
+
+def winter(update, context):
+    """Функция отчет по зиме."""
+
+    logging.info(f'Пользователь {update.effective_chat.username},'
+                 f'чат {update.effective_chat.id}, запросил: лето')
+
+    text = 'winter'
+    summerwinter(update, context, text,
+                 TRAIN_ALL_ENDPOINT, MAI_ENDPOINT, API_TOKEN)
 
 
 def button(update, context):
@@ -139,6 +166,8 @@ def main():
 
     updater = Updater(token=TELEGRAM_BOT_TOKEN)
     updater.dispatcher.add_handler(CommandHandler('start', wake_up))
+    updater.dispatcher.add_handler(CommandHandler('summer', summer))
+    updater.dispatcher.add_handler(CommandHandler('winter', winter))
     updater.dispatcher.add_handler(MessageHandler(Filters.text, have_massege))
     updater.dispatcher.add_handler(CallbackQueryHandler(button))
     updater.dispatcher.add_error_handler(error_handler)
@@ -149,14 +178,14 @@ def main():
 
 if __name__ == '__main__':
     logging.basicConfig(
-        level=logging.DEBUG,
+        level=logging.INFO,
         filename='log.log',
         format=(
             '%(asctime)s, %(levelname)s, %(message)s,'
             '%(name)s, %(funcName)s, %(lineno)d'),
         filemode='a',
     )
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)
     streamHandler = logging.StreamHandler(sys.stdout)
     formatter = logging.Formatter(
         '%(asctime)s, %(levelname)s, %(message)s,'

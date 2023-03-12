@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db.models import Max
 from rest_framework import viewsets
 from train.models import DoneMaiDate, Train, Cases, Maintenance
@@ -28,8 +30,19 @@ class DoneMaiDateViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = (IsStaff,)
 
     def get_queryset(self):
-        number = self.kwargs.get("number")
         serial = self.kwargs.get("serial")
+        number = self.kwargs.get("number")
+        wintersummer = self.kwargs.get("wintersummer")
+        currentYear = datetime.now().year
+        if wintersummer:
+            if wintersummer == 'summer':
+                wintersummer = 'Лето'
+            elif wintersummer == 'winter':
+                wintersummer = 'Зима'
+            return (DoneMaiDate.objects.
+                    filter(maintenance__type=wintersummer,
+                           maintenance_date__year=currentYear).
+                    order_by('-maintenance_date'))
         return (DoneMaiDate.objects.
                     filter(train__number=number, train__serial__slug=serial).
                     order_by('-mileage')[:3])
@@ -41,8 +54,10 @@ class TrainViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         number = self.kwargs.get("number")
-        return (Train.objects.
-                filter(number=number).order_by('serial'))
+        if number:
+            return (Train.objects.
+                    filter(number=number).order_by('serial'))
+        return (Train.objects.all())
 
 
 class CaseViewSet(viewsets.ReadOnlyModelViewSet):
