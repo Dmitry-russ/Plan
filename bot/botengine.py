@@ -6,7 +6,6 @@ from getapi import check_train, get_summerwinter
 def summerwinter(update, context, text,
                  TRAIN_ALL_ENDPOINT, MAI_ENDPOINT, API_TOKEN):
     chat_id = update.effective_chat.id
-    text = 'summer'
     summer_mai = get_summerwinter(MAI_ENDPOINT, API_TOKEN, text)
     text = None
     trains = check_train(TRAIN_ALL_ENDPOINT, API_TOKEN, text)
