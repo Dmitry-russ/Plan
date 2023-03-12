@@ -20,7 +20,7 @@ class TrainSerializer(serializers.ModelSerializer):
 class MaintenanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Maintenance
-        fields = ('type',)
+        fields = ('type', 'number',)
 
 
 class DoneMaiDateSerializer(serializers.ModelSerializer):

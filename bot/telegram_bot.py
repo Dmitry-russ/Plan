@@ -8,7 +8,7 @@ from telegram.ext import (CommandHandler, Updater, MessageHandler,
                           Filters, CallbackQueryHandler)
 
 from consts import (TRAIN_ENDPOINT, MAI_ENDPOINT, USER_ENDPOINT, USERS,
-                    CASE_ENDPOINT)
+                    CASE_ENDPOINT, MAI_NEXT_ENDPOINT)
 from getapi import get_token, check_train, finde_mai, finde_case
 from utils import check_user, send_me_messege
 
@@ -32,11 +32,7 @@ def wake_up(update, context):
     name = update.message.chat.first_name
     username = update.effective_chat.username
 
-    # проверка прав доступа
-    access = check_user(update, context, USERS)
-    #  exception...
-    if not access:
-        return
+    check_user(update, context, USERS)
 
     context.bot.send_message(
         chat_id=chat_id,
@@ -49,18 +45,25 @@ def wake_up(update, context):
     send_me_messege(context, MY_CHAT_ID, messege)
 
 
+def error_handler(update, context):
+    """Обработка ошибок."""
+    username = update.effective_chat.username
+    messege_for_me = f'Ошибка: {str(context.error)}\n Пользователь: {username}'
+    messege = 'Ошибка обработки запроса. Обратитесь к администратору.'
+    user_chat_id = update.effective_chat.id
+    context.bot.send_message(chat_id=user_chat_id,
+                             text=messege)
+    send_me_messege(context, MY_CHAT_ID, messege_for_me)
+
+
 def have_massege(update, context):
     """Обработка входящего сообщения."""
-    # try:
-
-    # проверка прав доступа
-    access = check_user(update, context, USERS)
-    #  exception...
-    if not access:
-        return
-
     chat_id = update.effective_chat.id
     text = update.message.text
+
+    username = update.effective_chat.username
+    messege_for_me = f'Пользователь {username}, {chat_id} запросил: {text}'
+    send_me_messege(context, MY_CHAT_ID, messege_for_me)
 
     trains = check_train(TRAIN_ENDPOINT, API_TOKEN, text)
     if trains is None or len(trains) < 1:
@@ -86,18 +89,16 @@ def have_massege(update, context):
         serial_slug = trains[0].get('serial').get('slug')
         serial_serial = trains[0].get('serial').get('serial')
         text = f'{serial_slug} {text}'
-        result_messege, reply_markup = finde_mai(MAI_ENDPOINT, API_TOKEN, text)
+        result_messege, reply_markup = finde_mai(MAI_ENDPOINT,
+                                                 MAI_NEXT_ENDPOINT,
+                                                 API_TOKEN,
+                                                 text, )
         context.bot.send_message(
             chat_id=chat_id,
             text=result_messege)
         context.bot.send_message(chat_id=chat_id,
                                  text='Вывести замечания по поезду:',
                                  reply_markup=reply_markup)
-    # except Exception as error:
-        # message = f'Сбой в работе программы: {error}'
-        # context.bot.send_message(
-        # chat_id=chat_id,
-        # text=result_messege)
 
 
 def button(update, context):
@@ -106,7 +107,10 @@ def button(update, context):
     query = update.callback_query
     text = query.data
     if 'case' not in text:
-        result_messege, reply_markup = finde_mai(MAI_ENDPOINT, API_TOKEN, text)
+        result_messege, reply_markup = finde_mai(MAI_ENDPOINT,
+                                                 MAI_NEXT_ENDPOINT,
+                                                 API_TOKEN,
+                                                 text, )
         context.bot.send_message(chat_id=chat_id, text=result_messege)
         context.bot.send_message(chat_id=chat_id,
                                  text='Вывести замечания по поезду:',
@@ -132,15 +136,11 @@ def main():
     logging.info('Main function is strating.')
 
     updater = Updater(token=TELEGRAM_BOT_TOKEN)
-
-    # try:
     updater.dispatcher.add_handler(CommandHandler('start', wake_up))
     updater.dispatcher.add_handler(MessageHandler(Filters.text, have_massege))
     updater.dispatcher.add_handler(CallbackQueryHandler(button))
-    # except Exception as error:
-    # message = f'Сбой в работе программы: {error}'
+    updater.dispatcher.add_error_handler(error_handler)
 
-    # finally:
     updater.start_polling()
     updater.idle()
 

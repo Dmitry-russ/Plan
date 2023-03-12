@@ -1,15 +1,14 @@
 import datetime
+from http import HTTPStatus
 
 import requests
-
-from http import HTTPStatus
 
 from utils import case_buttons
 
 
 def check_server(response):
     if response.status_code != HTTPStatus.OK:
-        raise ConnectionError('Сервер недоступен.')
+        raise ConnectionError('Ошибка обработки запроса на сервере')
 
 
 def get_token(USER_ENDPOINT, USER, PASSWORD) -> str:
@@ -32,7 +31,17 @@ def check_train(TRAIN_ENDPOINT, API_TOKEN, text) -> list:
     return response.json()
 
 
-def finde_mai(MAI_ENDPOINT, API_TOKEN, text) -> requests:
+def next_mai_num(MAI_NEXT_ENDPOINT, API_TOKEN, number) -> list:
+    """Поиск следующего ТО."""
+    response = requests.get(
+        url=MAI_NEXT_ENDPOINT + f'{number}/',
+        headers={'Authorization': API_TOKEN},
+    )
+    check_server(response)
+    return response.json()
+
+
+def finde_mai(MAI_ENDPOINT, MAI_NEXT_ENDPOINT, API_TOKEN, text) -> requests:
     """Запрос данных о инспекциях."""
     textchange = text.split()
     response = requests.get(
@@ -47,6 +56,11 @@ def finde_mai(MAI_ENDPOINT, API_TOKEN, text) -> requests:
     first_run_check = True
     for res in result:
         if first_run_check:
+            number_mai = int(res.get('maintenance').get('number'))
+            number_mai += 1  # смотрю следующую инспекцию
+            next_mai = next_mai_num(MAI_NEXT_ENDPOINT, API_TOKEN, number_mai)
+            if next_mai:
+                next_mai = next_mai[0].get('type')
             train_serial_slug = res.get('train').get('serial').get('slug')
             train_serial = res.get('train').get('serial').get('serial')
             train_number = res.get('train').get('number')
@@ -62,7 +76,8 @@ def finde_mai(MAI_ENDPOINT, API_TOKEN, text) -> requests:
             result_messege += f'{train_serial}-{train_number} \n'
             result_messege += f'Арендатор: {train_renter} \n'
             result_messege += (f'Пробег: {train_mileage} на дату: '
-                               f'{train_mileage_date} \n\n')
+                               f'{train_mileage_date} \n')
+            result_messege += f'Следующее ТО: {next_mai} \n\n'
 
         first_run_check = False
         mai_data = datetime.datetime.strptime(
@@ -82,7 +97,7 @@ def finde_mai(MAI_ENDPOINT, API_TOKEN, text) -> requests:
                            f' {mileage}\n место: {place}\n\n')
         reply_markup = case_buttons(train_serial,
                                     train_number,
-                                    train_serial_slug,)
+                                    train_serial_slug, )
     return result_messege, reply_markup
 
 
