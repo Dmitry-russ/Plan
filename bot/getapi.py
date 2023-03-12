@@ -53,12 +53,19 @@ def finde_mai(MAI_ENDPOINT, MAI_NEXT_ENDPOINT, API_TOKEN, text) -> requests:
     if len(result) == 0:
         return 'Инспекций еще не проводилось.'
     result_messege: str = ''
+
+    # смотрю следующую инспекцию
+    next_mai = None
+    for res in result:
+        number_mai = res.get('maintenance').get('number')
+        if number_mai is not None:
+            number_mai = int(number_mai) + 1
+            next_mai = next_mai_num(MAI_NEXT_ENDPOINT, API_TOKEN, number_mai)
+            break
+
     first_run_check = True
     for res in result:
         if first_run_check:
-            number_mai = int(res.get('maintenance').get('number'))
-            number_mai += 1  # смотрю следующую инспекцию
-            next_mai = next_mai_num(MAI_NEXT_ENDPOINT, API_TOKEN, number_mai)
             if next_mai:
                 next_mai = next_mai[0].get('type')
             train_serial_slug = res.get('train').get('serial').get('slug')
