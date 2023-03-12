@@ -14,4 +14,5 @@ USERS: list = ['dmitrypetukhovekb',
                'smnvkrll',
                'nkiryuhin93',
                'Baggravation',
-               'Rusnik49', ]
+               'Rusnik49',
+               'NicolaiSha', ]
