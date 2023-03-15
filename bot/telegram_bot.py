@@ -120,6 +120,16 @@ def summer(update, context):
                  TRAIN_ALL_ENDPOINT, MAI_ENDPOINT, API_TOKEN)
 
 
+def days30(update, context):
+    """Функция отчет по 30 суткам."""
+    logging.info(f'Пользователь {update.effective_chat.username},'
+                 f'чат {update.effective_chat.id}, '
+                 f'запросил: 30 суточный отчет')
+    text = '30days'
+    summerwinter(update, context, text,
+                 TRAIN_ALL_ENDPOINT, MAI_ENDPOINT, API_TOKEN)
+
+
 def winter(update, context):
     """Функция отчет по зиме."""
 
@@ -169,6 +179,7 @@ def main():
     updater.dispatcher.add_handler(CommandHandler('start', wake_up))
     updater.dispatcher.add_handler(CommandHandler('summer', summer))
     updater.dispatcher.add_handler(CommandHandler('winter', winter))
+    updater.dispatcher.add_handler(CommandHandler('30days', days30))
     updater.dispatcher.add_handler(MessageHandler(Filters.text, have_massege))
     updater.dispatcher.add_handler(CallbackQueryHandler(button))
     updater.dispatcher.add_error_handler(error_handler)

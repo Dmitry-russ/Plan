@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django.db.models import Max
 from rest_framework import viewsets
@@ -9,6 +9,8 @@ from .serializers import (DoneMaiDateSerializer,
                           TrainSerializer,
                           CaseSerializer,
                           MaintenanceSerializer, )
+
+DAYS_GORISONT = 50
 
 
 class MaiNumViewSet(viewsets.ReadOnlyModelViewSet):
@@ -32,20 +34,27 @@ class DoneMaiDateViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         serial = self.kwargs.get("serial")
         number = self.kwargs.get("number")
-        wintersummer = self.kwargs.get("wintersummer")
+        info = self.kwargs.get("info")
         currentYear = datetime.now().year
-        if wintersummer:
-            if wintersummer == 'summer':
-                wintersummer = 'Лето'
-            elif wintersummer == 'winter':
-                wintersummer = 'Зима'
+        currentDate = datetime.today()
+        days30Date = currentDate - timedelta(days=DAYS_GORISONT)
+        choose_report: dict = {
+            'summer': 'Лето',
+            'winter': 'Зима'
+        }
+        if info:
+            if info == '30days':
+                return (DoneMaiDate.objects.
+                        filter(
+                            maintenance_date__range=[days30Date, currentDate]).
+                        order_by('-maintenance_date'))
             return (DoneMaiDate.objects.
-                    filter(maintenance__type=wintersummer,
+                    filter(maintenance__type=choose_report.get(info),
                            maintenance_date__year=currentYear).
                     order_by('-maintenance_date'))
         return (DoneMaiDate.objects.
-                    filter(train__number=number, train__serial__slug=serial).
-                    order_by('-mileage')[:3])
+                filter(train__number=number, train__serial__slug=serial).
+                order_by('-mileage')[:3])
 
 
 class TrainViewSet(viewsets.ReadOnlyModelViewSet):

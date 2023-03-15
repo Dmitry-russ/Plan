@@ -22,7 +22,7 @@ def get_token(USER_ENDPOINT, USER, PASSWORD) -> str:
     return f'Bearer {response.json().get("access")}'
 
 
-def get_summerwinter(MAI_ENDPOINT, API_TOKEN, text) -> str:
+def get_report(MAI_ENDPOINT, API_TOKEN, text) -> str:
     """Запрос выполненных переводов в лето или зиму."""
     response = requests.get(
         url=MAI_ENDPOINT + f'{text}/',
