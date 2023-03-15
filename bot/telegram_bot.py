@@ -43,7 +43,8 @@ def wake_up(update, context):
              f'я выведу три последние инспекци.'
              f'\n\nДоступные отчеты:'
              f'\n/summer - отчет по переводам в лето'
-             f'\n/winter - отчет по переводам в зиму',
+             f'\n/winter - отчет по переводам в зиму'
+             f'\n/30days - отчет по 30 суткам',
     )
     messege = f'Пользователь {username}, чат {chat_id}, запустил бот.'
     logging.info(messege)
