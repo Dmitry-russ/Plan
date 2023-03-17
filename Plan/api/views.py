@@ -10,7 +10,7 @@ from .serializers import (DoneMaiDateSerializer,
                           CaseSerializer,
                           MaintenanceSerializer, )
 
-DAYS_GORISONT = 50
+DAYS_GORISONT = 75
 
 
 class MaiNumViewSet(viewsets.ReadOnlyModelViewSet):

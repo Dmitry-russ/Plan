@@ -22,6 +22,7 @@ def summerwinter(update, context, text,
                     mai.get('maintenance_date'), '%Y-%m-%d')
                 maintenance_date = maintenance_date.strftime("%d.%m.%Y")
                 comment = mai.get('comment')
+                mai_type = mai.get('maintenance').get('type')
                 if comment is None:
                     comment = 'нет комментария'
                 if text == '30days':
@@ -32,13 +33,12 @@ def summerwinter(update, context, text,
                     counter = current_date - maintenance_date_calk
                     counter = 30 - counter.days
                     counter = 0 if counter < 0 else counter
-                    mai_type = mai.get('maintenance').get('type')
                     messege += (f'\n{serial}-{number} '
                                 f'{mai_type} {maintenance_date} '
                                 f'({comment}) осталось дней {counter}')
                     break
                 messege += (f'\n{serial}-{number} '
-                            f'{choose_report.get(text)} {maintenance_date} '
+                            f'{mai_type} {maintenance_date} '
                             f'({comment})')
                 break
         else:
