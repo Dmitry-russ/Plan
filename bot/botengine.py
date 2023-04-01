@@ -24,7 +24,7 @@ def summerwinter(update, context, text,
                 comment = mai.get('comment')
                 mai_type = mai.get('maintenance').get('type')
                 if comment is None:
-                    comment = 'нет комментария'
+                    comment = '-'
                 if text == '30days':
                     maintenance_date_calk = datetime.strptime(
                         str(maintenance_date), "%d.%m.%Y")
