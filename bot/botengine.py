@@ -38,7 +38,7 @@ def summerwinter(update, context, text,
                                 f'({comment}) осталось дней {counter}')
                     break
                 messege += (f'\n{serial}-{number} '
-                            # f'{mai_type} {maintenance_date} '
+                            f'{mai_type} {maintenance_date} '
                             f'({comment})')
                 break
         else:
