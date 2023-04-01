@@ -35,7 +35,7 @@ def summerwinter(update, context, text,
                     counter = 0 if counter < 0 else counter
                     messege += (f'\n{serial}-{number} '
                                 # f'{mai_type} {maintenance_date} '
-                                f'({comment}) осталось дней {counter}')
+                                f'осталось дней {counter}')
                     break
                 messege += (f'\n{serial}-{number} '
                             f'{mai_type} {maintenance_date} '
