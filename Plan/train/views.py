@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.http import HttpResponse
 from django.conf import settings
 
+import datetime
 import tablib
 
 from .forms import CasesForm, NewTrainForm, NewMaiForm, NewMaiFormFromList
@@ -181,7 +182,8 @@ def mai_create(request, train_id):
 
     form = NewMaiForm(
         request.POST or None,
-        files=request.FILES or None, )
+        files=request.FILES or None,
+        initial={'maintenance_date': datetime.now()})
     train = get_object_or_404(Train, id=train_id)
     context = {'form': form,
                'train': train, }
