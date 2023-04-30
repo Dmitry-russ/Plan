@@ -10,6 +10,7 @@ def page_control(request, objects, count):
 
 
 def dict_create(main: Maintenance, donemai: DoneMaiDate, k, result):
+    """Вспомогательная функция создания словаря с данными для вывода."""
     mileage = '{0:,}'.format(donemai[0].mileage).replace(',', ' ')
     check = {
         "mileage": mileage,

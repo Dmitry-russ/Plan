@@ -4,20 +4,25 @@
 
     <div class="row">
         <article class="col-12 col-md-9">
-            <form method="post" enctype="multipart/form-data"
-                  action="{% url 'train:train_detail' train.id %}">
-                {% csrf_token %}
-                <div class="mb-3">
-                    {{ form.as_p }}
-                </div>
+            {% if is_edit %}
+                <form method="post" enctype="multipart/form-data"
+                      action="{% url 'train:train_detail' train.id %}">
+            {% else %}
+                <form method="post" enctype="multipart/form-data"
+                      action="{% url 'train:train_create' %}">
+            {% endif %}
+            {% csrf_token %}
+            <div class="mb-3">
+                {{ form.as_p }}
+            </div>
 
-                <button type="submit" class="btn btn-light">
-                    Сохранить
-                </button>
-                {% if is_edit %}
-                    <a type="button" class="btn btn-light"
-                    href="{% url 'train:train_list' %}">Выйти без изменений</a>
-                {% endif %}
+            <button type="submit" class="btn btn-light">
+                Сохранить
+            </button>
+            {% if is_edit %}
+                <a type="button" class="btn btn-light"
+                   href="{% url 'train:train_list' %}">Выйти без изменений</a>
+            {% endif %}
             </form>
         </article>
     </div>

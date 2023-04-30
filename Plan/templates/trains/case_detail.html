@@ -36,11 +36,11 @@
 
                 <div class="mb-3">
                     {% if form.file.value %}
-                    <a type="button" class="btn btn-outline-light"
-                                     href="{{ media }}{{ form.file.value }}">
-                                     Открыть текущий файл: {{ form.file.value }}</a>
-                    {% else %}  
-                    <label for="exampleFormControlTextarea1" class="form-label">Нет загруженных файлов</label>        
+                        <a type="button" class="btn btn-outline-light"
+                           href="{{ media }}{{ form.file.value }}">
+                            Открыть текущий файл: {{ form.file.value }}</a>
+                    {% else %}
+                        <label for="exampleFormControlTextarea1" class="form-label">Нет загруженных файлов</label>
                     {% endif %}
                 </div>
 

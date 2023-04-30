@@ -10,7 +10,7 @@ from .serializers import (DoneMaiDateSerializer,
                           CaseSerializer,
                           MaintenanceSerializer, )
 
-DAYS_GORISONT = 75
+DAYS_GORISONT = 90
 
 
 class MaiNumViewSet(viewsets.ReadOnlyModelViewSet):
@@ -46,15 +46,15 @@ class DoneMaiDateViewSet(viewsets.ReadOnlyModelViewSet):
             if info == '30days':
                 return (DoneMaiDate.objects.
                         filter(
-                            maintenance_date__range=[days30Date, currentDate]).
+                    maintenance_date__range=[days30Date, currentDate]).
                         order_by('-maintenance_date'))
             return (DoneMaiDate.objects.
                     filter(maintenance__type=choose_report.get(info),
                            maintenance_date__year=currentYear).
                     order_by('-maintenance_date'))
         return (DoneMaiDate.objects.
-                filter(train__number=number, train__serial__slug=serial).
-                order_by('-mileage')[:3])
+                    filter(train__number=number, train__serial__slug=serial).
+                    order_by('-mileage')[:3])
 
 
 class TrainViewSet(viewsets.ReadOnlyModelViewSet):

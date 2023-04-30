@@ -1,10 +1,11 @@
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, redirect, render
-from django.http import HttpResponse
-from django.conf import settings
-
 import datetime
+
 import tablib
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.forms import modelformset_factory
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import CasesForm, NewTrainForm, NewMaiForm, NewMaiFormFromList
 from .models import Cases, Train, DoneMaiDate, Maintenance
@@ -14,7 +15,7 @@ PAGE_LIST = 40
 MEDIA_URL = settings.MEDIA_URL
 
 
-@login_required
+# @login_required
 def train_list(request):
     """Вывод списка поездов."""
 
@@ -29,13 +30,58 @@ def train_list(request):
     return render(request, 'trains/train_list.html', context)
 
 
+def train_small_report(request):
+    """Краткий отчет по пробегам поездов."""
+
+    trains = Train.objects.all()
+    NewTrainFormSet = modelformset_factory(Train, form=NewTrainForm, extra=0)
+    formset = NewTrainFormSet(
+        request.POST or None,
+        files=request.FILES or None,
+        queryset=trains)
+    donemai: dict = {}
+    for train in trains:
+        lastmai = DoneMaiDate.objects.filter(
+            train=train).exclude(maintenance__number=None).last()
+        if lastmai is not None and train.mileage is not None:
+            diff = train.mileage - lastmai.mileage
+            diff = '{0:,}'.format(diff).replace(',', ' ')
+        else:
+            diff = '-'
+        lastmai_mileage = '{0:,}'.format(
+            lastmai.mileage).replace(',', ' ') if lastmai is not None else 'no'
+        check: dict = {
+            'maintenance': lastmai,
+            'mileage': lastmai_mileage,
+            'diff': diff,
+        }
+        donemai[train] = check
+    if formset.is_valid():
+        formset.save()
+        formset = NewTrainFormSet(
+            request.POST or None,
+            files=request.FILES or None,
+            queryset=trains)
+        return redirect('train:train_list')
+    check_form: bool = formset.is_valid()
+    context = {'formset': formset,
+               'trains': trains,
+               'donemai': donemai,
+               'check_form': check_form, }
+    return render(request, 'trains/train_small_report.html', context)
+
+
 @login_required
 def train_create(request):
     """Создание поезда."""
 
     form = NewTrainForm(request.POST or None, files=request.FILES or None)
     if not form.is_valid():
-        return render(request, 'trains/train_create.html', {'form': form})
+        return render(
+            request,
+            'trains/train_create.html',
+            {'form': form, 'is_edit': False, }
+            )
     train = form.save(commit=False)
     train.author = request.user
     train.save()
@@ -65,7 +111,7 @@ def train_detail(request, train_id):
     return render(request, 'trains/train_create.html', context)
 
 
-@login_required
+# @login_required
 def cases_list(request, train_id):
     """Вывод списка замечаний на поезде."""
 
@@ -127,7 +173,7 @@ def case_delete(request, case_id, train_id):
     return redirect('train:cases_list', train_id)
 
 
-@login_required
+# @login_required
 def mai_list(request, train_id):
     """Вывод списка проведенных и ближайших инспекций."""
 
@@ -250,6 +296,8 @@ def mai_detail(request, mai_id):
 
 @login_required
 def mai_export(request, train_id=None):
+    """Выгрузка в файл списка инспекций."""
+
     if train_id is not None:
         maintenance = DoneMaiDate.objects.filter(train__id=train_id)
     else:
