@@ -49,7 +49,7 @@ def train_small_report(request):
         else:
             diff = '-'
         lastmai_mileage = '{0:,}'.format(
-            lastmai.mileage).replace(',', ' ') if lastmai is not None else 'no'
+            lastmai.mileage).replace(',', ' ') if lastmai is not None else 'нет'
         check: dict = {
             'maintenance': lastmai,
             'mileage': lastmai_mileage,
