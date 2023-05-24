@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 
 import tablib
 from django.conf import settings
@@ -33,6 +33,24 @@ def train_list(request):
 def train_small_report(request):
     """Краткий отчет по пробегам поездов."""
 
+    if request.POST and 'myfilebut' in request.POST:
+        if request.FILES.get('myfile', False) is False:
+            return redirect('train:train_list')
+        myfile = request.FILES['myfile']
+        myfile_dict = [
+            ['ЭС2Г', '001', 100, '01.01.2021', ],
+            ['ЭС2Г', '002', 100, '01.01.2021', ],
+                  ]
+        for data in myfile_dict:
+            train = Train.objects.get(serial__serial=data[0], number=data[1])
+            if train:
+                train.mileage = data[2]
+                mileage_date = datetime.strptime(
+                        data[3], "%d.%m.%Y")
+                train.mileage_date = mileage_date
+                train.save()
+        return redirect('train:train_small_report')
+
     trains = Train.objects.all()
     NewTrainFormSet = modelformset_factory(Train, form=NewTrainForm, extra=0)
     formset = NewTrainFormSet(
@@ -62,13 +80,32 @@ def train_small_report(request):
             request.POST or None,
             files=request.FILES or None,
             queryset=trains)
-        return redirect('train:train_list')
+        return redirect('train:train_small_report')
     check_form: bool = formset.is_valid()
     context = {'formset': formset,
                'trains': trains,
                'donemai': donemai,
                'check_form': check_form, }
     return render(request, 'trains/train_small_report.html', context)
+
+
+# @login_required
+# def train_small_report_import(request):
+#     """Импорт данных о проебеге поездов из Ексель."""
+
+#     if request.FILES['myfile']:
+#         # myfile = request.FILES['myfile']
+#         myfile = [
+#             ['ЭС2Г', '001', 100, '02.02.2010', ],
+#             ['ЭС2Г', '002', 100, '02.02.2010', ],
+#                   ]
+#         for data in myfile:
+#             train = Train.objects.get(serial__serial=data[0], number=data[1])
+#             if train:
+#                 train.mileage = data[2]
+#                 train.save()
+#     return redirect('train:train_small_report')
+
 
 
 @login_required

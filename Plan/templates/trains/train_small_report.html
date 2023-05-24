@@ -2,6 +2,18 @@
 {% load dict_key %}
 {% block title %}Отчет по пробегам{% endblock %}
 {% block content %}
+
+<div>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <p>
+    <input type="file" class="form-control" name="myfile">
+</p>
+    <p>
+    <button type="submit" class="btn btn-light" onclick="clicked(event)" name="myfilebut">Загрузить данные из файла</button>
+    </p>
+</form>
+</div>
     <table class="table table-bordered">
         <thead>
         <tr>
@@ -21,9 +33,7 @@
 
             {{ formset.management_form }}
             <p>
-                <button type="submit" class="btn btn-light">
-                    Сохранить
-                </button>
+
                 {% for form in formset %}
                     {% if form.errors %}
                         {% for field in form %}
@@ -52,11 +62,20 @@
                     </tr>
 
                 {% endfor %}
-
+                <p>
+                <button type="submit" class="btn btn-light">
+                    Сохранить
+                </button>
         </form>
         </tbody>
     </table>
 
     {% include 'includes/paginator.html' %}
-
+    <script>
+        function clicked(e) {
+            if (!confirm('Данные о пробегах поездов будут перезаписаны. Продолжить? Если файл не выбран вы будете переведены на стартовую страницу.')) {
+                e.preventDefault();
+            }
+        }
+    </script>
 {% endblock %}
