@@ -7,9 +7,7 @@ from .views import (train_list, cases_list, case_detail,
                     case_create, train_create, case_delete,
                     mai_list, mai_create, mai_detail, mai_create_from_list,
                     mai_delete, train_detail, mai_not_delete, mai_export,
-                    train_small_report, 
-                    # train_small_report_import,
-                    )
+                    train_small_report, )
 
 app_name = 'train'
 urlpatterns = [
@@ -17,7 +15,6 @@ urlpatterns = [
     path('train/create/', train_create, name='train_create'),
     path('train/detail/<int:train_id>/', train_detail, name='train_detail'),
     path('train/smallreport/', train_small_report, name='train_small_report'),
-    # path('train/smallreport/import/', train_small_report_import, name='train_small_report_import'),
     path('train/cases/<int:train_id>/', cases_list, name='cases_list'),
     path('train/case/<int:case_id>/', case_detail, name='case_detail'),
     path('train/case/create/<int:train_id>/', case_create, name='case_create'),

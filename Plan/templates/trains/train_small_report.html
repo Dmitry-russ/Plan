@@ -3,17 +3,36 @@
 {% block title %}Отчет по пробегам{% endblock %}
 {% block content %}
 
-<div>
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <p>
-    <input type="file" class="form-control" name="myfile">
-</p>
-    <p>
-    <button type="submit" class="btn btn-light" onclick="clicked(event)" name="myfilebut">Загрузить данные из файла</button>
-    </p>
-</form>
-</div>
+    {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == 'success' %}
+                    <div class="alert alert-success" role="alert">
+                {% elif message.tags == 'error' %}
+                    <div class="alert alert-danger" role="alert">
+                {% elif message.tags == 'info' %}
+                    <div class="alert alert-warning" role="alert">
+                {% else %}
+                    <div class="alert alert-secondary" role="alert">      
+                {% endif %}
+                        {{ message|safe }}
+                    </div>              
+            {% endfor %}
+    {% endif %}
+
+    <div>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <p>
+                <input type="file" class="form-control" name="myfile">
+            </p>
+            <p>
+                <button type="submit" class="btn btn-light" onclick="clicked(event)" name="myfilebut">Загрузить данные
+                    из файла
+                </button>
+            </p>
+        </form>
+    </div>
+<br>
     <table class="table table-bordered">
         <thead>
         <tr>
@@ -44,7 +63,9 @@
                             {% endfor %}
                         {% endfor %}
                     {% endif %}
+                    
 
+                    
                     <tr>
                         <td>{{ form.id }}{{ form.serial.as_hidden }}{{ form.instance.serial }}</td>
                         <td>{{ form.number.as_hidden }}{{ form.instance.number }}{{ form.day_mileage.as_hidden }}</td>
@@ -53,8 +74,16 @@
                         <td>{{ form.mileage_date }}{{ form.mileage_date.errors }}</td>
                         {% with train=form.instance %}
                             {% with mai=donemai|dict_key:train %}
+                                
                                 <td>{{ mai.mileage }}{{ form.instance.train }}</td>
-                                <td>{{ mai.diff }}</td>
+                                {% if mai.control_diff == 'danger' %}
+                                <td class="table-danger">
+                                {% elif mai.control_diff == 'warning' %}
+                                <td class="table-success">
+                                {% else %}    
+                                <td>
+                                {% endif %} 
+                                    {{ mai.diff }}</td>
                             {% endwith %}
                         {% endwith %}
 
@@ -62,7 +91,7 @@
                     </tr>
 
                 {% endfor %}
-                <p>
+            <p>
                 <button type="submit" class="btn btn-light">
                     Сохранить
                 </button>
@@ -73,7 +102,7 @@
     {% include 'includes/paginator.html' %}
     <script>
         function clicked(e) {
-            if (!confirm('Данные о пробегах поездов будут перезаписаны. Продолжить? Если файл не выбран вы будете переведены на стартовую страницу.')) {
+            if (!confirm('Данные о пробегах поездов будут перезаписаны. Продолжить?')) {
                 e.preventDefault();
             }
         }

@@ -2,6 +2,7 @@ from datetime import datetime
 
 import tablib
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.forms import modelformset_factory
 from django.http import HttpResponse
@@ -9,9 +10,9 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import CasesForm, NewTrainForm, NewMaiForm, NewMaiFormFromList
 from .models import Cases, Train, DoneMaiDate, Maintenance
-from .utils import page_control, result_mai_list
+from .utils import page_control, result_mai_list, excel_open
 
-PAGE_LIST = 40
+PAGE_LIST = 100
 MEDIA_URL = settings.MEDIA_URL
 
 
@@ -30,25 +31,46 @@ def train_list(request):
     return render(request, 'trains/train_list.html', context)
 
 
+@login_required
 def train_small_report(request):
     """Краткий отчет по пробегам поездов."""
 
     if request.POST and 'myfilebut' in request.POST:
-        if request.FILES.get('myfile', False) is False:
-            return redirect('train:train_list')
-        myfile = request.FILES['myfile']
-        myfile_dict = [
-            ['ЭС2Г', '001', 100, '01.01.2021', ],
-            ['ЭС2Г', '002', 100, '01.01.2021', ],
-                  ]
-        for data in myfile_dict:
-            train = Train.objects.get(serial__serial=data[0], number=data[1])
-            if train:
-                train.mileage = data[2]
-                mileage_date = datetime.strptime(
-                        data[3], "%d.%m.%Y")
-                train.mileage_date = mileage_date
-                train.save()
+        try:
+            if request.FILES.get('myfile', False) is False:
+                messages.error(request, 'Файл не выбран.')
+                return redirect('train:train_small_report')
+            myfile = request.FILES['myfile']
+            # функция обработки файла
+            myfile_list = [
+                ['44', '001', 102, '01.01.2021', ],
+                ['ЭС2Г', '002', 102, '01.01.2021', ],
+            ]
+            myfile_list = excel_open(myfile)
+            error_massege: str = ''
+            for data in myfile_list:
+                if Train.objects.filter(
+                        serial__serial=data[0], number=data[1]).exists():
+                    train = Train.objects.get(
+                        serial__serial=data[0], number=data[1])
+                    train.mileage = data[2]
+                    mileage_date = datetime.strptime(data[3], "%d.%m.%Y")
+                    train.mileage_date = mileage_date
+                    train.save()
+                else:
+                    error_massege += f'{data[0]}-{data[1]} '
+            if error_massege:
+                messages.info(
+                    request, f'Данные из файла загружены и сохранены успешно. '
+                             f'Не загружены данные по поездам: {error_massege}'
+                             )
+            else:
+                messages.success(
+                    request, 'Данные из файла загружены и сохранены успешно.')
+        except Exception:
+            messages.error(request, 'Данные не загружены. '
+                                    'При обработке файла произошла ошибка. '
+                                    'Обратиетсь к администратору.')
         return redirect('train:train_small_report')
 
     trains = Train.objects.all()
@@ -59,19 +81,26 @@ def train_small_report(request):
         queryset=trains)
     donemai: dict = {}
     for train in trains:
+        control_diff = ''
         lastmai = DoneMaiDate.objects.filter(
             train=train).exclude(maintenance__number=None).last()
         if lastmai is not None and train.mileage is not None:
             diff = train.mileage - lastmai.mileage
+            if int(diff) > 30000:
+                control_diff = 'danger'
+            elif int(diff) > 25000:
+                control_diff = 'warning'
             diff = '{0:,}'.format(diff).replace(',', ' ')
         else:
             diff = '-'
         lastmai_mileage = '{0:,}'.format(
-            lastmai.mileage).replace(',', ' ') if lastmai is not None else 'нет'
+            lastmai.mileage).replace(',', ' ') if lastmai is not None else 'no'
+
         check: dict = {
             'maintenance': lastmai,
             'mileage': lastmai_mileage,
             'diff': diff,
+            'control_diff': control_diff,
         }
         donemai[train] = check
     if formset.is_valid():
@@ -80,6 +109,7 @@ def train_small_report(request):
             request.POST or None,
             files=request.FILES or None,
             queryset=trains)
+        messages.success(request, 'Данные сохранены.')
         return redirect('train:train_small_report')
     check_form: bool = formset.is_valid()
     context = {'formset': formset,
@@ -87,25 +117,6 @@ def train_small_report(request):
                'donemai': donemai,
                'check_form': check_form, }
     return render(request, 'trains/train_small_report.html', context)
-
-
-# @login_required
-# def train_small_report_import(request):
-#     """Импорт данных о проебеге поездов из Ексель."""
-
-#     if request.FILES['myfile']:
-#         # myfile = request.FILES['myfile']
-#         myfile = [
-#             ['ЭС2Г', '001', 100, '02.02.2010', ],
-#             ['ЭС2Г', '002', 100, '02.02.2010', ],
-#                   ]
-#         for data in myfile:
-#             train = Train.objects.get(serial__serial=data[0], number=data[1])
-#             if train:
-#                 train.mileage = data[2]
-#                 train.save()
-#     return redirect('train:train_small_report')
-
 
 
 @login_required
@@ -118,7 +129,7 @@ def train_create(request):
             request,
             'trains/train_create.html',
             {'form': form, 'is_edit': False, }
-            )
+        )
     train = form.save(commit=False)
     train.author = request.user
     train.save()

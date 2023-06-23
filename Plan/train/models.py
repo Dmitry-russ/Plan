@@ -215,7 +215,7 @@ class DoneMaiDate(CreatedModel):
     class Meta:
         ordering = ["mileage"]
         constraints = [
-            models.UniqueConstraint(fields=["train", "maintenance_date", "maintenance",],
+            models.UniqueConstraint(fields=["train", "maintenance_date", "maintenance", ],
                                     name="train_maintenance_date"),
         ]
 

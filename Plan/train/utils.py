@@ -1,3 +1,5 @@
+import openpyxl
+
 from django.core.paginator import Paginator
 
 from .models import DoneMaiDate, Maintenance
@@ -54,3 +56,24 @@ def result_mai_list(main: Maintenance, donemai: DoneMaiDate):
             result.append(check)
             k += 1
     return result
+
+
+def excel_open(file):
+    """Функция считывания данных из файла с пробегами."""
+    book = openpyxl.open(file, read_only=True, data_only=True)
+    sheet = book.active
+    myfile_list: list = []
+    for row in range(2, sheet.max_row+1):
+        serial = sheet[row][0].value
+        number = sheet[row][1].value
+        if isinstance(number, int):
+            number = f'{number:03d}'
+        data = sheet['C1'].value
+        data = data.strftime("%d.%m.%Y")
+        mileage = sheet[row][3].value
+        #  mejremont = sheet[row][4].value
+        #  leto = sheet[row][5].value
+        #  status = sheet[row][6].value
+        temporarily = [serial, number, mileage, data]
+        myfile_list.append(temporarily)
+    return myfile_list
