@@ -70,7 +70,7 @@ def excel_open(file):
             number = f'{number:03d}'
         data = sheet['C1'].value
         data = data.strftime("%d.%m.%Y")
-        mileage = sheet[row][3].value
+        mileage = sheet[row][2].value
         #  mejremont = sheet[row][4].value
         #  leto = sheet[row][5].value
         #  status = sheet[row][6].value
