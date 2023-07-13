@@ -14,6 +14,9 @@ from .utils import page_control, result_mai_list, excel_open
 
 PAGE_LIST = 100
 MEDIA_URL = settings.MEDIA_URL
+EXCLUDE_LIST = ["30", "Зима", "Лето", ]
+DANGER_DIFF = 30000
+WARNING_DIFF = 25000
 
 
 # @login_required
@@ -41,11 +44,6 @@ def train_small_report(request):
                 messages.error(request, 'Файл не выбран.')
                 return redirect('train:train_small_report')
             myfile = request.FILES['myfile']
-            # функция обработки файла
-            myfile_list = [
-                ['44', '001', 102, '01.01.2021', ],
-                ['ЭС2Г', '002', 102, '01.01.2021', ],
-            ]
             myfile_list = excel_open(myfile)
             error_massege: str = ''
             for data in myfile_list:
@@ -83,12 +81,13 @@ def train_small_report(request):
     for train in trains:
         control_diff = ''
         lastmai = DoneMaiDate.objects.filter(
-            train=train).exclude(maintenance__number=None).last()
+            train=train).exclude(
+            maintenance__type__in=EXCLUDE_LIST).last()
         if lastmai is not None and train.mileage is not None:
             diff = train.mileage - lastmai.mileage
-            if int(diff) > 30000:
+            if int(diff) > DANGER_DIFF:
                 control_diff = 'danger'
-            elif int(diff) > 25000:
+            elif int(diff) > WARNING_DIFF:
                 control_diff = 'warning'
             diff = '{0:,}'.format(diff).replace(',', ' ')
         else:

@@ -11,6 +11,7 @@ from .serializers import (DoneMaiDateSerializer,
                           MaintenanceSerializer, )
 
 DAYS_GORISONT = 90
+MAI_REPORT_COUNT = 4
 
 
 class MaiNumViewSet(viewsets.ReadOnlyModelViewSet):
@@ -53,7 +54,7 @@ class DoneMaiDateViewSet(viewsets.ReadOnlyModelViewSet):
                     order_by('-maintenance_date'))
         return (DoneMaiDate.objects.
                 filter(train__number=number, train__serial__slug=serial).
-                order_by('-mileage')[:3])
+                order_by('-mileage')[:MAI_REPORT_COUNT])
 
 
 class TrainViewSet(viewsets.ReadOnlyModelViewSet):
