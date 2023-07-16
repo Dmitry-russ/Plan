@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load dict_key %}
+{% block title %}системы измерения{% endblock %}
+{% block content %}
+
+<br>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th scope="col">Описание</th>
+            <th scope="col">Локация</th>
+            <th scope="col">Тип метрологического контроля</th>
+            <th scope="col">Периодичность, мес</th>
+            <th scope="col">Серийный номер</th>
+            <th scope="col">Дата проерки</th>
+            <th scope="col">Дата окончания проверки</th>
+        </tr>
+        </thead>
+        <tbody>
+        <form method="post" enctype="multipart/form-data"
+              action="{% url 'metrolog:metrolog_small_report' %}">
+            {% csrf_token %}
+
+            {{ formset.management_form }}
+            <p>
+
+                {% for form in formset %}
+                    {% if form.errors %}
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <div class="alert alert-danger">
+                                    <strong>В форме ошибки! Данные не сохранены.</strong>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %}
+                    
+                    <tr>
+                        <td>{{ form.id }}{{ form.instance.description }}{{ form.type.as_hidden }}{{ form.dunumber.as_hidden }}</td>
+                        <td>{{ form.instance.location }}</td>
+                        <td>{{ form.control_type }}{{ form.model.as_hidden }}{{ form.number.as_hidden }}</td>
+                        <td>{{ form.seral_number }}{{ form.periodicity.as_hidden }}</td>
+                        <td>{{ form.date_control }}{{ form.place.as_hidden }}</td>
+                        <td>{{ form.date_end }}{{ form.in_act.as_hidden }}{{ form.note.as_hidden }}</td>
+                    </tr>
+
+                {% endfor %}
+            <p>
+                <button type="submit" class="btn btn-light">
+                    Сохранить
+                </button>
+        </form>
+        </tbody>
+    </table>
+
+    {% include 'includes/paginator.html' %}
+{% endblock %}

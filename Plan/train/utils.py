@@ -71,9 +71,6 @@ def excel_open(file):
         data = sheet['C1'].value
         data = data.strftime("%d.%m.%Y")
         mileage = sheet[row][2].value
-        #  mejremont = sheet[row][4].value
-        #  leto = sheet[row][5].value
-        #  status = sheet[row][6].value
         temporarily = [serial, number, mileage, data]
         myfile_list.append(temporarily)
     return myfile_list

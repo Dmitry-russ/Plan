@@ -20,6 +20,7 @@ user_patterns = [
 urlpatterns = [
     path('', include('train.urls')),
     path('', include(user_patterns)),
+    path('metrolog/', include('metrolog.urls')),
     path('api/', include('api.urls')),
     path('auth/', include('users.urls', namespace='users')),
     path('admin/', admin.site.urls),
