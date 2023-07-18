@@ -1,19 +1,43 @@
 {% extends 'base.html' %}
 {% load dict_key %}
-{% block title %}системы измерения{% endblock %}
+{% block title %}Системы измерения.{% endblock %}
 {% block content %}
 
-<br>
-    <table class="table table-bordered">
-        <thead>
+    Фильтрация данных:
+    <form action="" method="get">
+        {{ filter_form.as_p }}
+        <input type="submit" value="Отфильтровать" class="btn btn-outline-light">
+        <a type="button" class="btn btn-outline-light"
+           href="{% url 'metrolog:metrolog_small_report' %}">Сбросить фильтры</a>
+    </form>
+    <br>
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == 'success' %}
+                <div class="alert alert-success" role="alert">
+            {% elif message.tags == 'error' %}
+                <div class="alert alert-danger" role="alert">
+            {% elif message.tags == 'info' %}
+                <div class="alert alert-warning" role="alert">
+            {% else %}
+                <div class="alert alert-secondary" role="alert">
+            {% endif %}
+        {{ message|safe }}
+        </div>
+        {% endfor %}
+    {% endif %}
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover table-bordered table-sm align-middle">
+        <thead class="align-middle">
         <tr>
-            <th scope="col">Описание</th>
-            <th scope="col">Локация</th>
-            <th scope="col">Тип метрологического контроля</th>
-            <th scope="col">Периодичность, мес</th>
-            <th scope="col">Серийный номер</th>
-            <th scope="col">Дата проерки</th>
-            <th scope="col">Дата окончания проверки</th>
+            <th class="col">Описание</th>
+            <th class="col">Серийный номер</th>
+            <th class="col">Локация</th>
+            <th class="col">Расположение</th>
+            <th class="col">Дата проверки</th>
+            <th class="col">Дата окончания проверки</th>
+            <th class="col">Осталось дней</th>
         </tr>
         </thead>
         <tbody>
@@ -29,29 +53,53 @@
                         {% for field in form %}
                             {% for error in field.errors %}
                                 <div class="alert alert-danger">
-                                    <strong>В форме ошибки! Данные не сохранены.</strong>
+                                    <strong>В форме ошибки! Данные не сохранены. Поле: "{{ field.label }}" содержит
+                                        ошибку: {{ error }}</strong>
                                 </div>
                             {% endfor %}
                         {% endfor %}
                     {% endif %}
-                    
-                    <tr>
-                        <td>{{ form.id }}{{ form.instance.description }}{{ form.type.as_hidden }}{{ form.dunumber.as_hidden }}</td>
-                        <td>{{ form.instance.location }}</td>
-                        <td>{{ form.control_type }}{{ form.model.as_hidden }}{{ form.number.as_hidden }}</td>
-                        <td>{{ form.seral_number }}{{ form.periodicity.as_hidden }}</td>
-                        <td>{{ form.date_control }}{{ form.place.as_hidden }}</td>
-                        <td>{{ form.date_end }}{{ form.in_act.as_hidden }}{{ form.note.as_hidden }}</td>
-                    </tr>
+
+
+                    {% if form.instance.get_days < danger_days %}
+                        <tr class="table-danger">
+                            {% elif form.instance.get_days < warning_days %}
+                        <tr class="table-primary">
+                            {% else %}
+                        <tr>
+                    {% endif %}
+                <td>{{ form.id }}{{ form.description.as_hidden }}<a type="button" style="width: 20rem;"
+                                                                    class="btn btn-outline-dark"
+                                                                    href="{% url 'metrolog:metrolog_detail' form.id.value %}"> {{ form.instance.description }} </a>
+                    {{ form.type.as_hidden }}{{ form.dunumber.as_hidden }}
+                    {{ form.model.as_hidden }}{{ form.number.as_hidden }}
+                    {{ form.in_act.as_hidden }}{{ form.control_type.as_hidden }}
+                    {{ form.note.as_hidden }}{{ form.organization.as_hidden }}
+                    {{ form.organization_fact.as_hidden }}{{ form.periodicity.as_hidden }}</td>
+                <td>{{ form.seral_number }}{{ form.seral_number.error }}</td>
+                <td>{{ form.location }}{{ form.location.error }}</td>
+                <td>{{ form.place }}{{ form.place.error }}</td>
+
+                <td>{{ form.date_control }}{{ form.date_control.error }}</td>
+                <td>{{ form.date_end }}{{ form.date_end.error }}</td>
+                <td>{{ form.instance.get_days }}</td>
+                </tr>
 
                 {% endfor %}
             <p>
-                <button type="submit" class="btn btn-light">
+
+                <button type="submit" class="btn btn-outline-light">
                     Сохранить
                 </button>
+                <a type="button" class="btn btn-outline-light"
+                   href="{% url 'metrolog:metrolog_create' %}">Создать новый СИ в базе</a>
+                <a type="button" class="btn btn-outline-light"
+                   href="{% url 'metrolog:mai_export_si' %}">Выгрузить базу в Excel</a>
+
         </form>
         </tbody>
     </table>
+</div>
 
-    {% include 'includes/paginator.html' %}
+{% include 'includes/paginator.html' %}
 {% endblock %}

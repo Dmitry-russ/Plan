@@ -1,0 +1,5 @@
+<form action="{% url 'metrolog:metrolog_detail' metrolog.id %}" method="post">
+    {% csrf_token %}
+    {{ cert_form.as_p }}
+    <input type="submit" value="Сохранить" class="btn btn-outline-light">
+</form>

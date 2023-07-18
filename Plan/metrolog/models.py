@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib.auth import get_user_model
 from django.db import models
 from train.models import CreatedModel, ALL_PLACE_CHOICES
@@ -12,17 +14,22 @@ METROLOG_TYPE = [
 
 class Measurement(CreatedModel):
     """Модель инструмента (системы измерения)."""
+
     PLACE_CHOICES = ALL_PLACE_CHOICES
     METROLOG_CONTROL = METROLOG_TYPE
     author = models.ForeignKey(User,
                                on_delete=models.SET_NULL,
                                null=True,
                                related_name='measurement', )
-    type = models.TextField(
+    type = models.CharField(
         verbose_name="Тип СИ", max_length=TEXT_FIELD_MAX_LENGTH,
+        blank=True,
+        null=True,
     )
-    dunumber = models.TextField(
+    dunumber = models.CharField(
         verbose_name="Номер DU", max_length=TEXT_FIELD_MAX_LENGTH,
+        blank=True,
+        null=True,
     )
     description = models.TextField(
         verbose_name="Описание", max_length=TEXT_FIELD_MAX_LENGTH,
@@ -33,14 +40,20 @@ class Measurement(CreatedModel):
         default="ЕКБ",
         verbose_name="Локация"
     )
-    model = models.TextField(
+    model = models.CharField(
         verbose_name="Модель СИ", max_length=TEXT_FIELD_MAX_LENGTH,
+        blank=True,
+        null=True,
     )
-    maker = models.TextField(
+    maker = models.CharField(
         verbose_name="Производитель", max_length=TEXT_FIELD_MAX_LENGTH,
+        blank=True,
+        null=True,
     )
-    number = models.TextField(
+    number = models.CharField(
         verbose_name="Номер в госреестре", max_length=TEXT_FIELD_MAX_LENGTH,
+        blank=True,
+        null=True,
     )
     control_type = models.CharField(
         max_length=30,
@@ -51,7 +64,19 @@ class Measurement(CreatedModel):
     periodicity = models.IntegerField(
         verbose_name="Периодичность проверки, мес.",
     )
-    seral_number = models.TextField(
+    organization = models.CharField(
+        verbose_name="Организация для направления в поверку",
+        max_length=TEXT_FIELD_MAX_LENGTH,
+        blank=True,
+        null=True,
+    )
+    organization_fact = models.CharField(
+        verbose_name="Фактическая организация, проводившая поверку",
+        max_length=TEXT_FIELD_MAX_LENGTH,
+        blank=True,
+        null=True,
+    )
+    seral_number = models.CharField(
         verbose_name="Серийный номер", max_length=TEXT_FIELD_MAX_LENGTH,
     )
     date_control = models.DateField(
@@ -60,7 +85,7 @@ class Measurement(CreatedModel):
     date_end = models.DateField(
         verbose_name="Дата окончания поверки",
     )
-    place = models.TextField(
+    place = models.CharField(
         verbose_name="Фактическое местоположение",
         max_length=TEXT_FIELD_MAX_LENGTH,
     )
@@ -71,7 +96,18 @@ class Measurement(CreatedModel):
     note = models.TextField(
         verbose_name="Примечание",
         max_length=TEXT_FIELD_MAX_LENGTH,
+        blank=True,
+        null=True,
     )
+
+    def get_days(self):
+        date_end = datetime.strptime(
+            str(self.date_end), '%Y-%m-%d')
+        current_date = datetime.strptime(
+            str(datetime.now().date()), '%Y-%m-%d')
+        diff = date_end - current_date
+        days = diff.days
+        return days
 
     def __str__(self) -> str:
         return self.description
@@ -79,6 +115,7 @@ class Measurement(CreatedModel):
 
 class Certificate(CreatedModel):
     """Модель хранения файлов сертификатов."""
+
     author = models.ForeignKey(User,
                                on_delete=models.SET_NULL,
                                related_name='certificate',
@@ -86,16 +123,20 @@ class Certificate(CreatedModel):
     metrolog = models.ForeignKey(Measurement,
                                  on_delete=models.CASCADE,
                                  related_name='certificate')
-    name = models.CharField(max_length=TEXT_FIELD_MAX_LENGTH, blank=True, )
+    name = models.CharField(
+        max_length=TEXT_FIELD_MAX_LENGTH,
+        blank=True,
+        verbose_name="Название сертификата", )
     file = models.FileField(blank=True,
                             null=True,
                             upload_to='metrolog/',
-                            verbose_name="Сертификат", )
+                            verbose_name="Новый сертификат", )
     default = models.BooleanField(default=True)
 
 
 class Manual(CreatedModel):
     """Модель хранения РЭ."""
+
     author = models.ForeignKey(User,
                                on_delete=models.SET_NULL,
                                related_name='manual',

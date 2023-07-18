@@ -1,7 +1,25 @@
 {% extends 'base.html' %}
-{% block title %} {{ metrolog.description }} (Серийный номер: {{ metrolog.seral_number }}) {% endblock %}
+{% block title %}
+    {% if is_edit %}
+        {{ metrolog.description }} (Серийный номер: {{ metrolog.seral_number }})
+
+    {% else %}
+        Внесение новго СИ в базу.
+    {% endif %}
+{% endblock %}
 {% block name %}
 
+    {% if certificates %}
+        Список актуальных сертификатов:
+        {% for certificate in certificates %}
+            <li><a type="button" class="btn btn-outline-light"
+                   href="{{ media }}{{ certificate.file }}">
+                Открыть файл: {{ certificate.name }}</a></li>
+        {% endfor %}
+    {% else %}
+        Актуальных сертификатов нет.
+    {% endif %}
+    <br>
     <div class="row">
         <article class="col-12 col-md-9">
             {% if is_edit %}
@@ -19,9 +37,13 @@
             <button type="submit" class="btn btn-light">
                 Сохранить
             </button>
+
+            <input type="button" class="btn btn-light" onclick="history.back();" value="Назад"/>
+            <a type="button" class="btn btn-light"
+               href="{% url 'metrolog:metrolog_small_report' %}">Вернуться к сипску</a>
             {% if is_edit %}
                 <a type="button" class="btn btn-light"
-                   href="{% url 'train:train_list' %}">Выйти без изменений</a>
+                   href="{% url 'metrolog:certificate_create' metrolog.id %}">Просмотреть/добавить сертификаты</a>
             {% endif %}
             </form>
         </article>

@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}
+    {% if is_edit %}
+        {{ metrolog.description }} (Серийный номер: {{ metrolog.seral_number }})
+    {% else %}
+        Сертификаты.
+    {% endif %}
+{% endblock %}
+{% block name %}
+
+    {% if certificates %}
+        {% for cert in certificates %}
+            <li><a type="button" class="btn btn-outline-light"
+                   href="{{ media }}{{ cert.file }}">
+                Открыть сертификат: {{ cert.name }}</a>
+                <a type="button" class="btn btn-outline-light"
+                   href="{% url 'metrolog:certificate_delete' cert.id %}">
+                    Удалить.</a>
+                {% if cert.default %}
+                    <a type="button" class="btn btn-outline-light"
+                       href="{% url 'metrolog:certificate_default' cert.id %}">
+                        Актуальный сертификат. Сделать устаревшим.</a>
+                {% else %}
+                    <a type="button" class="btn btn-outline-light"
+                       href="{% url 'metrolog:certificate_default' cert.id %}">
+                        Устаревший сертификат. Сделать актуальным.</a>
+                {% endif %}
+
+
+            </li>
+        {% endfor %}
+        <br>
+    {% endif %}
+
+    <div class="row">
+        <article class="col-12 col-md-9">
+            <form method="post" enctype="multipart/form-data"
+                  action="{% url 'metrolog:certificate_create' metrolog.id %}">
+
+                {% csrf_token %}
+                <div class="mb-3">
+                    {{ form.as_p }}
+                </div>
+
+                <button type="submit" class="btn btn-light">
+                    Сохранить новый сертификат
+                </button>
+                <a type="button" class="btn btn-light"
+                   href="{% url 'metrolog:metrolog_small_report' %}">Вернуться к сипску</a>
+                <a type="button" class="btn btn-light"
+                   href="{% url 'metrolog:metrolog_detail' metrolog.id %}">Вернуться к системе измерения</a>
+            </form>
+        </article>
+    </div>
+    {% include 'includes/paginator.html' %}
+{% endblock %}
