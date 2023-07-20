@@ -62,16 +62,16 @@ class Measurement(CreatedModel):
         verbose_name="Тип метрологического контроля"
     )
     periodicity = models.IntegerField(
-        verbose_name="Периодичность проверки, мес.",
+        verbose_name="Периодичность метрологического контроля, мес.",
     )
     organization = models.CharField(
-        verbose_name="Организация для направления в поверку",
+        verbose_name="Организация, проводящая метрологический контроль",
         max_length=TEXT_FIELD_MAX_LENGTH,
         blank=True,
         null=True,
     )
     organization_fact = models.CharField(
-        verbose_name="Фактическая организация, проводившая поверку",
+        verbose_name="Организация, фактически проводившая метрологический контроль",
         max_length=TEXT_FIELD_MAX_LENGTH,
         blank=True,
         null=True,
@@ -80,10 +80,10 @@ class Measurement(CreatedModel):
         verbose_name="Серийный номер", max_length=TEXT_FIELD_MAX_LENGTH,
     )
     date_control = models.DateField(
-        verbose_name="Дата проверки",
+        verbose_name="Дата выдачи сертификата",
     )
     date_end = models.DateField(
-        verbose_name="Дата окончания поверки",
+        verbose_name="Дата окончания действия сертификата",
     )
     place = models.CharField(
         verbose_name="Фактическое местоположение",

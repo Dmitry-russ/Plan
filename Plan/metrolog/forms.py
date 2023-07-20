@@ -42,7 +42,7 @@ class NewMetrolog(forms.ModelForm):
         label="Примечание",
         required=False, )
     seral_number = forms.CharField(
-        widget=forms.Textarea(attrs={'cols': 10, 'rows': 1}),
+        widget=forms.Textarea(attrs={'cols': 20, 'rows': 1}),
         label="Сериный номер", required=False, )
 
     class Meta:

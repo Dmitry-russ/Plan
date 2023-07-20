@@ -10,7 +10,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*', ]
 INSTALLED_APPS = [
@@ -122,6 +122,9 @@ LOGIN_REDIRECT_URL = 'train:train_list'
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
+
+# FILE_UPLOAD_PERMISSIONS=0o640 - для больших файлов?
+# FILE_UPLOAD_MAX_MEMORY_SIZE = 30388608
 
 # CACHES = {
 #     'default': {
