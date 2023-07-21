@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load thumbnail %}
 {% block title %}
     {% if is_edit %}
         {{ metrolog.description }} (Серийный номер: {{ metrolog.seral_number }})
@@ -20,6 +21,7 @@
         Актуальных сертификатов нет.
     {% endif %}
     <br>
+
     <div class="row">
         <article class="col-12 col-md-9">
             {% if is_edit %}
@@ -31,6 +33,12 @@
             {% endif %}
             {% csrf_token %}
             <div class="mb-3">
+                <p>
+                    <!-- "960x339" -->
+                    {% thumbnail metrolog.file "960x339" upscale=True as im %}
+                        <img class="img-thumbnail" src="{{ im.url }}">
+                    {% endthumbnail %}
+                </p>
                 {{ form.as_p }}
             </div>
 

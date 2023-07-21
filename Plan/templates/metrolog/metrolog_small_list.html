@@ -35,8 +35,8 @@
             <th class="col">Серийный номер</th>
             <th class="col">Локация</th>
             <th class="col">Расположение</th>
-            <th class="col">Дата проверки</th>
-            <th class="col">Дата окончания проверки</th>
+            <th class="col">Дата выдачи сертификата</th>
+            <th class="col">Дата окончания действия сертификата</th>
             <th class="col">Осталось дней</th>
         </tr>
         </thead>
@@ -61,9 +61,9 @@
                     {% endif %}
 
 
-                    {% if form.instance.get_days < danger_days %}
+                    {% if form.instance.days < danger_days %}
                         <tr class="table-danger">
-                            {% elif form.instance.get_days < warning_days %}
+                            {% elif form.instance.days < warning_days %}
                         <tr class="table-primary">
                             {% else %}
                         <tr>
@@ -82,7 +82,7 @@
 
                 <td>{{ form.date_control }}{{ form.date_control.error }}</td>
                 <td>{{ form.date_end }}{{ form.date_end.error }}</td>
-                <td>{{ form.instance.get_days }}</td>
+                <td>{{ form.instance.days }}</td>
                 </tr>
 
                 {% endfor %}

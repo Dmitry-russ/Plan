@@ -30,6 +30,7 @@ def metrolog_create(request):
     metrolog = form.save(commit=False)
     metrolog.author = request.user
     metrolog.save()
+    metrolog.count_date_end()
     return redirect('metrolog:metrolog_small_report')
 
 
@@ -96,6 +97,7 @@ def metrolog_detail(request, metrolog_id):
 
     if form.is_valid():
         metrolog.save()
+        metrolog.count_date_end()
         form = NewMetrolog(
             request.POST or None,
             files=request.FILES or None,
@@ -116,6 +118,8 @@ def metrolog_small_report(request):
     """Краткий отчет по метрологии."""
 
     metrolog = Measurement.objects.all().order_by('description')
+    for metr in metrolog:
+        metr.count_date_end()
 
     filter_form = FilterForm(request.GET)
     if filter_form.is_valid():
@@ -127,10 +131,10 @@ def metrolog_small_report(request):
                 place__icontains=filter_form.cleaned_data["place"])
         if filter_form.cleaned_data["seral_number"]:
             metrolog = metrolog.filter(
-              seral_number__icontains=filter_form.cleaned_data["seral_number"])
+                seral_number__icontains=filter_form.cleaned_data["seral_number"])
         if filter_form.cleaned_data["description"]:
             metrolog = metrolog.filter(
-              description__icontains=filter_form.cleaned_data["description"])
+                description__icontains=filter_form.cleaned_data["description"])
 
     NewMetrologFormSet = modelformset_factory(
         Measurement, form=NewMetrolog, extra=0)
@@ -141,6 +145,8 @@ def metrolog_small_report(request):
 
     if formset.is_valid():
         formset.save()
+        for metrolog in Measurement.objects.all():
+            metrolog.count_date_end()
         formset = NewMetrologFormSet(
             request.POST or None,
             files=request.FILES or None,

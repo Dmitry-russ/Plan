@@ -22,20 +22,21 @@ class FilterForm(forms.Form):
 
 class NewMetrolog(forms.ModelForm):
     date_control = forms.DateField(
-        label="Дата проверки",
+        label="Дата выдачи сертификата",
         required=True,
         input_formats=['%d.%m.%Y'],
         initial=format(date.today(), '%d.%m.%Y'), )
     date_end = forms.DateField(
-        label="Дата окончания проверки",
-        required=True,
+        label="Дата окончания действия сертификата",
         input_formats=['%d.%m.%Y'],
-        initial=format(date.today(), '%d.%m.%Y'))
+        initial=format(date.today(), '%d.%m.%Y'),
+        required=False,
+    ),
     place = forms.CharField(
         widget=forms.Textarea(attrs={'cols': 10, 'rows': 1}),
         label="Место расположения", )
     description = forms.CharField(
-        widget=forms.Textarea(attrs={'cols': 30, 'rows': 3}),
+        widget=forms.Textarea(attrs={'cols': 28, 'rows': 3}),
         label="Описание", )
     note = forms.CharField(
         widget=forms.Textarea(attrs={'cols': 30, 'rows': 3}),
@@ -47,7 +48,7 @@ class NewMetrolog(forms.ModelForm):
 
     class Meta:
         model = Measurement
-        fields = ('type', 'dunumber',
+        fields = ('file', 'type', 'dunumber',
                   'description', 'location', 'model',
                   'number', 'control_type', 'periodicity', 'organization',
                   'organization_fact',

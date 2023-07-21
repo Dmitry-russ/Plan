@@ -4,6 +4,8 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from train.models import CreatedModel, ALL_PLACE_CHOICES
 
+from .utils import add_months
+
 User = get_user_model()
 TEXT_FIELD_MAX_LENGTH = 100
 METROLOG_TYPE = [
@@ -84,6 +86,8 @@ class Measurement(CreatedModel):
     )
     date_end = models.DateField(
         verbose_name="Дата окончания действия сертификата",
+        blank=True,
+        null=True,
     )
     place = models.CharField(
         verbose_name="Фактическое местоположение",
@@ -99,15 +103,29 @@ class Measurement(CreatedModel):
         blank=True,
         null=True,
     )
+    days = models.IntegerField(
+        verbose_name="Осталось дней",
+        blank=True,
+        null=True,
+        editable=False,
+    )
+    file = models.ImageField(blank=True,
+                             null=True,
+                             upload_to='metrolog/',
+                             verbose_name="Фотография СИ", )
 
-    def get_days(self):
+    def count_date_end(self):
+        date_end = add_months(self.date_control, self.periodicity)
+        self.date_end = date_end
+
         date_end = datetime.strptime(
             str(self.date_end), '%Y-%m-%d')
         current_date = datetime.strptime(
             str(datetime.now().date()), '%Y-%m-%d')
         diff = date_end - current_date
         days = diff.days
-        return days
+        self.days = days
+        self.save()
 
     def __str__(self) -> str:
         return self.description

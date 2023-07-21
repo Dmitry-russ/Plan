@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users.apps.UsersConfig',
     'core.apps.CoreConfig',
+    'sorl.thumbnail',
     'api',
     'train',
     'metrolog',
@@ -58,23 +59,23 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Plan.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': os.environ.get('DB_NAME', default='postgres'),
-#         'USER': os.environ.get('POSTGRES_USER', default='postgres'),
-#         'PASSWORD': os.environ.get('POSTGRES_PASSWORD', default='postgres'),
-#         'HOST': os.environ.get('DB_HOST', default='db'),
-#         'PORT': os.environ.get('DB_PORT', default=5432)
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DB_NAME', default='postgres'),
+        'USER': os.environ.get('POSTGRES_USER', default='postgres'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', default='postgres'),
+        'HOST': os.environ.get('DB_HOST', default='db'),
+        'PORT': os.environ.get('DB_PORT', default=5432)
+    }
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -123,7 +124,7 @@ LOGIN_REDIRECT_URL = 'train:train_list'
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
 
-# FILE_UPLOAD_PERMISSIONS=0o640 - для больших файлов?
+# FILE_UPLOAD_PERMISSIONS = 0o640  
 # FILE_UPLOAD_MAX_MEMORY_SIZE = 30388608
 
 # CACHES = {

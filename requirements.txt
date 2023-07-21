@@ -39,3 +39,4 @@ psycopg2-binary==2.8.6
 python-telegram-bot==13.7
 django-tablib==3.2
 openpyxl==3.1.2
+sorl-thumbnail==12.9.0
