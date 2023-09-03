@@ -1,5 +1,17 @@
 from rest_framework import serializers
 from train.models import Train, DoneMaiDate, Maintenance, Serial, Cases
+from metrolog.models import Measurement
+
+
+class MeasurementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Measurement
+        fields = ('description',
+                  'seral_number',
+                  'date_end',
+                  'location',
+                  'days',
+                  'file',)
 
 
 class SerialSerializer(serializers.ModelSerializer):

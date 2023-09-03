@@ -13,8 +13,8 @@
             <li><a type="button" class="btn btn-outline-light"
                    href="{{ media }}{{ cert.file }}">
                 Открыть сертификат: {{ cert.name }}</a>
-                <a type="button" class="btn btn-outline-light"
-                   href="{% url 'metrolog:certificate_delete' cert.id %}">
+                <a type="button" class="btn btn-outline-light" onclick="clicked(event)"
+                   href="{% url 'metrolog:certificate_delete'  cert.id %}">
                     Удалить.</a>
                 {% if cert.default %}
                     <a type="button" class="btn btn-outline-light"
@@ -53,4 +53,13 @@
         </article>
     </div>
     {% include 'includes/paginator.html' %}
+
+    <script>
+        function clicked(e) {
+            if (!confirm('Действительно удалить запись? Сертификат будет удален безвозвратно.')) {
+                e.preventDefault();
+            }
+        }
+    </script>
+
 {% endblock %}

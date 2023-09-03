@@ -128,13 +128,13 @@ def metrolog_small_report(request):
                 location=filter_form.cleaned_data["location"])
         if filter_form.cleaned_data["place"]:
             metrolog = metrolog.filter(
-                place__icontains=filter_form.cleaned_data["place"])
+                place__iregex=filter_form.cleaned_data["place"])
         if filter_form.cleaned_data["seral_number"]:
             metrolog = metrolog.filter(
-                seral_number__icontains=filter_form.cleaned_data["seral_number"])
+                seral_number__iregex=filter_form.cleaned_data["seral_number"])
         if filter_form.cleaned_data["description"]:
             metrolog = metrolog.filter(
-                description__icontains=filter_form.cleaned_data["description"])
+                description__iregex=filter_form.cleaned_data["description"])
 
     NewMetrologFormSet = modelformset_factory(
         Measurement, form=NewMetrolog, extra=0)

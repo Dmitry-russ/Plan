@@ -32,6 +32,16 @@ def get_report(MAI_ENDPOINT, API_TOKEN, text) -> str:
     return response.json()
 
 
+def get_metrolog(METROLOG_ENDPOINT, API_TOKEN, data) -> str:
+    """Запрос данных о системах измерения."""
+    response = requests.get(
+        url=METROLOG_ENDPOINT + f'?search={data}',
+        headers={'Authorization': API_TOKEN},
+    )
+    check_server(response)
+    return response.json()
+
+
 def check_train(TRAIN_ENDPOINT, API_TOKEN, text) -> list:
     """Проверка наличия запрошенного номера поезда."""
     if text:

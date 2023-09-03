@@ -1,17 +1,27 @@
 from datetime import datetime, timedelta
 
 from django.db.models import Max
-from rest_framework import viewsets
+from rest_framework import viewsets, generics, filters
 from train.models import DoneMaiDate, Train, Cases, Maintenance
+from metrolog.models import Measurement
 
 from .permissions import IsStaff
 from .serializers import (DoneMaiDateSerializer,
                           TrainSerializer,
                           CaseSerializer,
-                          MaintenanceSerializer, )
+                          MaintenanceSerializer,
+                          MeasurementSerializer, )
 
 DAYS_GORISONT = 90
 MAI_REPORT_COUNT = 4
+
+
+class MeasurementSet(generics.ListAPIView):
+    queryset = Measurement.objects.all()
+    serializer_class = MeasurementSerializer
+    permission_classes = (IsStaff,)
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['description', 'seral_number']
 
 
 class MaiNumViewSet(viewsets.ReadOnlyModelViewSet):
@@ -46,7 +56,8 @@ class DoneMaiDateViewSet(viewsets.ReadOnlyModelViewSet):
         if info:
             if info == '30days':
                 return (DoneMaiDate.objects.
-                        filter(maintenance_date__range=[days30Date, currentDate]).
+                        filter(
+                            maintenance_date__range=[days30Date, currentDate]).
                         order_by('-maintenance_date'))
             return (DoneMaiDate.objects.
                     filter(maintenance__type=choose_report.get(info),

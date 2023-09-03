@@ -149,7 +149,8 @@ class Certificate(CreatedModel):
                             null=True,
                             upload_to='metrolog/',
                             verbose_name="Новый сертификат", )
-    default = models.BooleanField(default=True)
+    default = models.BooleanField(default=True,
+                                  verbose_name="Актуальность сертификата", )
 
 
 class Manual(CreatedModel):

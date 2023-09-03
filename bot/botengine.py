@@ -3,6 +3,23 @@ from datetime import datetime
 from getapi import check_train, get_report
 
 
+def metrolog(measurement):
+    """Обработка списка по метрлогии перед выводом."""
+    if len(measurement) == 0:
+        return 'не найдено'
+    messege: str = ''
+    for measur in measurement:
+        description = measur.get('description')
+        seral_number = measur.get('seral_number')
+        # date_end = measur.get('date_end')
+        days = measur.get('days')
+        file = measur.get('file')
+        location = measur.get('location')
+        messege += (f'\n\n{location}: {description} '
+                    f'({seral_number}), осталось: {days} дней \nФото: {file}')
+    return messege
+
+
 def summerwinter(update, context, text,
                  TRAIN_ALL_ENDPOINT, MAI_ENDPOINT, API_TOKEN):
     chat_id = update.effective_chat.id

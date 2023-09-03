@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_filters',
     'users.apps.UsersConfig',
     'core.apps.CoreConfig',
     'sorl.thumbnail',
@@ -92,6 +93,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+FILE_UPLOAD_PERMISSIONS = 0o2755
+FILE_UPLOAD_MAX_MEMORY_SIZE = 30388608
+
 TIME_ZONE = 'UTC'
 
 DATE_FORMAT = "d-m-Y"
@@ -124,9 +128,6 @@ LOGIN_REDIRECT_URL = 'train:train_list'
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
 
-# FILE_UPLOAD_PERMISSIONS = 0o640  
-# FILE_UPLOAD_MAX_MEMORY_SIZE = 30388608
-
 # CACHES = {
 #     'default': {
 #         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
@@ -148,6 +149,8 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend'],
 
 }
 

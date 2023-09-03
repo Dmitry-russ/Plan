@@ -1,7 +1,11 @@
 from django.urls import include, path
 from rest_framework import routers
 
-from .views import DoneMaiDateViewSet, TrainViewSet, CaseViewSet, MaiNumViewSet
+from .views import (DoneMaiDateViewSet,
+                    TrainViewSet,
+                    CaseViewSet,
+                    MaiNumViewSet,
+                    MeasurementSet,)
 
 v1_router = routers.DefaultRouter()
 v1_router.register(r'train/mai/(?P<serial>[\w]+)/(?P<number>[\w]+)',
@@ -22,6 +26,10 @@ v1_router.register(r'train/listall',
 v1_router.register(r'train/list/(?P<number>[\w]+)',
                    TrainViewSet,
                    basename='list')
+# v1_router.register(r'metrolog/list',
+#                    MeasurementSet.as_view(),
+#                    basename='list')
+
 
 # v1_router.register(r'costs', CostViewSet, basename='costs')
 # v1_router.register(r'groups', GroupViewSet)
@@ -29,4 +37,5 @@ v1_router.register(r'train/list/(?P<number>[\w]+)',
 app_name = 'api'
 urlpatterns = [
     path('v1/', include(v1_router.urls)),
+    path('v1/metrolog/list/', MeasurementSet.as_view()),
 ]

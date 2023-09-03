@@ -7,11 +7,12 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (CommandHandler, Updater, MessageHandler,
                           Filters, CallbackQueryHandler)
 
-from botengine import summerwinter
+from botengine import summerwinter, metrolog
 from consts import (TRAIN_ENDPOINT, MAI_ENDPOINT, USER_ENDPOINT, USERS,
-                    CASE_ENDPOINT, MAI_NEXT_ENDPOINT, TRAIN_ALL_ENDPOINT)
+                    CASE_ENDPOINT, MAI_NEXT_ENDPOINT, TRAIN_ALL_ENDPOINT,
+                    METROLOG_ENDPOINT)
 from getapi import (get_token, check_train,
-                    finde_mai, finde_case, )
+                    finde_mai, finde_case, get_metrolog)
 from utils import check_user, send_me_messege
 
 load_dotenv()
@@ -70,6 +71,17 @@ def have_massege(update, context):
     """Обработка входящего сообщения."""
     chat_id = update.effective_chat.id
     text = update.message.text
+
+    'Временно блок обработки метрлогии'
+    if 'метро' in text.lower():
+        textchange = text.split()
+        data = textchange[1]
+        result = get_metrolog(METROLOG_ENDPOINT, API_TOKEN, data)
+        result_text = metrolog(result)
+        context.bot.send_message(
+                chat_id=chat_id,
+                text=result_text)
+        return
 
     username = update.effective_chat.username
     logging.info(f'Пользователь {username}, чат {chat_id}, запросил: {text}')
@@ -147,6 +159,8 @@ def button(update, context):
     chat_id = update.effective_chat.id
     query = update.callback_query
     text = query.data
+    # if 'metrolog' in text:
+    #     context.bot.send_photo(chat_id=chat_id, URL=text)
     if 'case' not in text:
         result_messege, reply_markup = finde_mai(MAI_ENDPOINT,
                                                  MAI_NEXT_ENDPOINT,
