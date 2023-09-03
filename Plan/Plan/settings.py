@@ -10,6 +10,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
+DATA_UPLOAD_MAX_NUMBER_FIELDS = None
+
 DEBUG = False
 
 ALLOWED_HOSTS = ['*', ]
