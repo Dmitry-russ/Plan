@@ -72,7 +72,8 @@ def have_massege(update, context):
     chat_id = update.effective_chat.id
     text = update.message.text
 
-    'Временно блок обработки метрлогии'
+    # Временно блок обработки метрлогии
+
     if 'метро' in text.lower():
         textchange = text.split()
         data = textchange[1]
