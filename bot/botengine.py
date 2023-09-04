@@ -3,6 +3,30 @@ from datetime import datetime
 from getapi import check_train, get_report
 
 
+def measurement(measurement):
+    """Обработка одной системы измерения."""
+    messege: str = ''
+    description = measurement.get('description')
+    seral_number = measurement.get('seral_number')
+    location = measurement.get('location')
+    id = measurement.get('id')
+    file = measurement.get('file')
+    days = measurement.get('days')
+    place = measurement.get('place')
+    messege += (f"\n /{id} {location}: {description} (SN: {seral_number}), "
+                f"расположение: {place}, осталось дней: {days}")
+
+# def get_measurement(METROLOG_ENDPOINT, API_TOKEN, data) -> str:
+#     """Запрос данных об одной системе измерения."""
+#     response = requests.get(
+#         url=METROLOG_ENDPOINT + f'/{data}',
+#         headers={'Authorization': API_TOKEN},
+#     )
+#     check_server(response)
+    return messege
+
+
+
 def metrolog(measurement):
     """Обработка списка по метрлогии перед выводом."""
     if len(measurement) == 0:
@@ -11,12 +35,9 @@ def metrolog(measurement):
     for measur in measurement:
         description = measur.get('description')
         seral_number = measur.get('seral_number')
-        # date_end = measur.get('date_end')
-        days = measur.get('days')
-        file = measur.get('file')
         location = measur.get('location')
-        messege += (f'\n\n{location}: {description} '
-                    f'({seral_number}), осталось: {days} дней \nФото: {file}')
+        id = measur.get('id')
+        messege += f"\n /{id} {location}: {description} (SN: {seral_number})"
     return messege
 
 

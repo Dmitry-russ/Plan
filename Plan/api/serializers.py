@@ -11,7 +11,9 @@ class MeasurementSerializer(serializers.ModelSerializer):
                   'date_end',
                   'location',
                   'days',
-                  'file',)
+                  'file',
+                  'id',
+                  'place',)
 
 
 class SerialSerializer(serializers.ModelSerializer):

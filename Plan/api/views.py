@@ -4,7 +4,8 @@ from django.db.models import Max
 from rest_framework import viewsets, generics, filters
 from train.models import DoneMaiDate, Train, Cases, Maintenance
 from metrolog.models import Measurement
-
+from rest_framework.decorators import action
+from rest_framework.generics import get_object_or_404
 from .permissions import IsStaff
 from .serializers import (DoneMaiDateSerializer,
                           TrainSerializer,
@@ -16,12 +17,20 @@ DAYS_GORISONT = 90
 MAI_REPORT_COUNT = 4
 
 
-class MeasurementSet(generics.ListAPIView):
+class MeasurementSet(viewsets.ReadOnlyModelViewSet):
     queryset = Measurement.objects.all()
     serializer_class = MeasurementSerializer
     permission_classes = (IsStaff,)
+    ordering_fields = ['location']
+    ordering = ['location']
     filter_backends = [filters.SearchFilter]
     search_fields = ['description', 'seral_number']
+
+    @action(detail=True, methods=["GET"],)
+    def measurement(self, request, pk):
+        """Запрос одного СИ."""
+        data = get_object_or_404(Measurement, id=pk)
+        return data
 
 
 class MaiNumViewSet(viewsets.ReadOnlyModelViewSet):

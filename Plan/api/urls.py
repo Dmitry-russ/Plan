@@ -26,9 +26,9 @@ v1_router.register(r'train/listall',
 v1_router.register(r'train/list/(?P<number>[\w]+)',
                    TrainViewSet,
                    basename='list')
-# v1_router.register(r'metrolog/list',
-#                    MeasurementSet.as_view(),
-#                    basename='list')
+v1_router.register(r'metrolog/list',
+                   MeasurementSet,
+                   basename='list')
 
 
 # v1_router.register(r'costs', CostViewSet, basename='costs')
@@ -37,5 +37,5 @@ v1_router.register(r'train/list/(?P<number>[\w]+)',
 app_name = 'api'
 urlpatterns = [
     path('v1/', include(v1_router.urls)),
-    path('v1/metrolog/list/', MeasurementSet.as_view()),
+    # path('v1/metrolog/list/', MeasurementSet.as_view()),
 ]

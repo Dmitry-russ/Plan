@@ -41,62 +41,37 @@
         </tr>
         </thead>
         <tbody>
-        <form method="post" enctype="multipart/form-data"
-              action="{% url 'metrolog:metrolog_small_report' %}">
-            {% csrf_token %}
 
-            {{ formset.management_form }}
-            <p>
+        <p>
 
-                {% for form in formset %}
-                    {% if form.errors %}
-                        {% for field in form %}
-                            {% for error in field.errors %}
-                                <div class="alert alert-danger">
-                                    <strong>В форме ошибки! Данные не сохранены. Поле: "{{ field.label }}" содержит
-                                        ошибку: {{ error }}</strong>
-                                </div>
-                            {% endfor %}
-                        {% endfor %}
-                    {% endif %}
+            {% for metr in metrolog %}
 
+                {% if metr.days < danger_days %}
+                    <tr class="table-danger">
+                        {% elif metr.days < warning_days %}
+                    <tr class="table-primary">
+                        {% else %}
+                    <tr>
+                {% endif %}
+            <td><a type="button" style="width: 20rem;"
+                   class="btn btn-outline-dark"
+                   href="{% url 'metrolog:metrolog_detail' metr.id %}"> {{ metr.description }} </a></td>
+            <td>{{ metr.seral_number }}</td>
+            <td>{{ metr.location }}</td>
+            <td>{{ metr.place }}</td>
+            <td>{{ metr.date_control }}</td>
+            <td>{{ metr.date_end }}</td>
+            <td>{{ metr.days }}</td>
+            </tr>
 
-                    {% if form.instance.days < danger_days %}
-                        <tr class="table-danger">
-                            {% elif form.instance.days < warning_days %}
-                        <tr class="table-primary">
-                            {% else %}
-                        <tr>
-                    {% endif %}
-                <td>{{ form.id }}{{ form.description.as_hidden }}<a type="button" style="width: 20rem;"
-                                                                    class="btn btn-outline-dark"
-                                                                    href="{% url 'metrolog:metrolog_detail' form.id.value %}"> {{ form.instance.description }} </a>
-                    {{ form.type.as_hidden }}{{ form.dunumber.as_hidden }}
-                    {{ form.model.as_hidden }}{{ form.number.as_hidden }}
-                    {{ form.in_act.as_hidden }}{{ form.control_type.as_hidden }}
-                    {{ form.note.as_hidden }}{{ form.organization.as_hidden }}
-                    {{ form.organization_fact.as_hidden }}{{ form.periodicity.as_hidden }}</td>
-                <td>{{ form.seral_number }}{{ form.seral_number.error }}</td>
-                <td>{{ form.location }}{{ form.location.error }}</td>
-                <td>{{ form.place }}{{ form.place.error }}</td>
+            {% endfor %}
+        <p>
 
-                <td>{{ form.date_control }}{{ form.date_control.error }}</td>
-                <td>{{ form.date_end }}{{ form.date_end.error }}</td>
-                <td>{{ form.instance.days }}</td>
-                </tr>
+            <a type="button" class="btn btn-outline-light"
+               href="{% url 'metrolog:metrolog_create' %}">Создать новый СИ в базе</a>
+            <a type="button" class="btn btn-outline-light"
+               href="{% url 'metrolog:mai_export_si' %}">Выгрузить базу в Excel</a>
 
-                {% endfor %}
-            <p>
-
-                <!-- <button type="submit" class="btn btn-outline-light">
-                    Сохранить
-                </button> -->
-                <a type="button" class="btn btn-outline-light"
-                   href="{% url 'metrolog:metrolog_create' %}">Создать новый СИ в базе</a>
-                <a type="button" class="btn btn-outline-light"
-                   href="{% url 'metrolog:mai_export_si' %}">Выгрузить базу в Excel</a>
-
-        </form>
         </tbody>
     </table>
 </div>

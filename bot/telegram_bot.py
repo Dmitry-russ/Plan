@@ -3,16 +3,17 @@ import os
 import sys
 
 from dotenv import load_dotenv
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ParseMode
 from telegram.ext import (CommandHandler, Updater, MessageHandler,
                           Filters, CallbackQueryHandler)
 
-from botengine import summerwinter, metrolog
+from botengine import summerwinter, metrolog, measurement
 from consts import (TRAIN_ENDPOINT, MAI_ENDPOINT, USER_ENDPOINT, USERS,
                     CASE_ENDPOINT, MAI_NEXT_ENDPOINT, TRAIN_ALL_ENDPOINT,
                     METROLOG_ENDPOINT)
 from getapi import (get_token, check_train,
-                    finde_mai, finde_case, get_metrolog)
+                    finde_mai, finde_case, get_metrolog,
+                    get_measurement)
 from utils import check_user, send_me_messege
 
 load_dotenv()
@@ -72,7 +73,7 @@ def have_massege(update, context):
     chat_id = update.effective_chat.id
     text = update.message.text
 
-    # Временно блок обработки метрлогии
+    # Временно блок обработки метрлогии, как его запустить?)))
 
     if 'метро' in text.lower():
         textchange = text.split()
@@ -80,8 +81,18 @@ def have_massege(update, context):
         result = get_metrolog(METROLOG_ENDPOINT, API_TOKEN, data)
         result_text = metrolog(result)
         context.bot.send_message(
-                chat_id=chat_id,
-                text=result_text)
+            chat_id=chat_id,
+            text=result_text,
+            parse_mode=ParseMode.HTML)
+        return
+
+    if '/' in text:
+        data = text.replace('/', '')
+        result = get_measurement(METROLOG_ENDPOINT, API_TOKEN, data)
+        result_text = measurement(result)
+        context.bot.send_message(
+            chat_id=chat_id,
+            text=result_text,)
         return
 
     username = update.effective_chat.username

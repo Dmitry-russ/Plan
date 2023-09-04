@@ -1,8 +1,6 @@
 import tablib
 from django.conf import settings
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.forms import modelformset_factory
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
@@ -136,27 +134,7 @@ def metrolog_small_report(request):
             metrolog = metrolog.filter(
                 description__iregex=filter_form.cleaned_data["description"])
 
-    NewMetrologFormSet = modelformset_factory(
-        Measurement, form=NewMetrolog, extra=0)
-    formset = NewMetrologFormSet(
-        request.POST or None,
-        files=request.FILES or None,
-        queryset=metrolog)
-
-    if formset.is_valid():
-        formset.save()
-        for metrolog in Measurement.objects.all():
-            metrolog.count_date_end()
-        formset = NewMetrologFormSet(
-            request.POST or None,
-            files=request.FILES or None,
-            queryset=metrolog)
-        messages.success(request, 'Данные сохранены.')
-        return redirect('metrolog:metrolog_small_report')
-    check_form: bool = formset.is_valid()
-    context = {'formset': formset,
-               'metrolog': metrolog,
-               'check_form': check_form,
+    context = {'metrolog': metrolog,
                'warning_days': WARNING_DAYS,
                'danger_days': DANGER_DAYS,
                'filter_form': filter_form,
