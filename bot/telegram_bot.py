@@ -92,7 +92,7 @@ def have_massege(update, context):
         result_text = measurement(result)
         context.bot.send_message(
             chat_id=chat_id,
-            text=result_text,)
+            text=result_text, )
         return
 
     username = update.effective_chat.username

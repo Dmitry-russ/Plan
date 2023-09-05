@@ -1,11 +1,12 @@
 from datetime import datetime, timedelta
 
 from django.db.models import Max
-from rest_framework import viewsets, generics, filters
-from train.models import DoneMaiDate, Train, Cases, Maintenance
 from metrolog.models import Measurement
+from rest_framework import viewsets, filters
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
+from train.models import DoneMaiDate, Train, Cases, Maintenance
+
 from .permissions import IsStaff
 from .serializers import (DoneMaiDateSerializer,
                           TrainSerializer,
@@ -26,7 +27,7 @@ class MeasurementSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = [filters.SearchFilter]
     search_fields = ['description', 'seral_number']
 
-    @action(detail=True, methods=["GET"],)
+    @action(detail=True, methods=["GET"], )
     def measurement(self, request, pk):
         """Запрос одного СИ."""
         data = get_object_or_404(Measurement, id=pk)
@@ -66,15 +67,15 @@ class DoneMaiDateViewSet(viewsets.ReadOnlyModelViewSet):
             if info == '30days':
                 return (DoneMaiDate.objects.
                         filter(
-                            maintenance_date__range=[days30Date, currentDate]).
+                    maintenance_date__range=[days30Date, currentDate]).
                         order_by('-maintenance_date'))
             return (DoneMaiDate.objects.
                     filter(maintenance__type=choose_report.get(info),
                            maintenance_date__year=currentYear).
                     order_by('-maintenance_date'))
         return (DoneMaiDate.objects.
-                filter(train__number=number, train__serial__slug=serial).
-                order_by('-mileage')[:MAI_REPORT_COUNT])
+                    filter(train__number=number, train__serial__slug=serial).
+                    order_by('-mileage')[:MAI_REPORT_COUNT])
 
 
 class TrainViewSet(viewsets.ReadOnlyModelViewSet):

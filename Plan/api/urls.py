@@ -5,7 +5,7 @@ from .views import (DoneMaiDateViewSet,
                     TrainViewSet,
                     CaseViewSet,
                     MaiNumViewSet,
-                    MeasurementSet,)
+                    MeasurementSet, )
 
 v1_router = routers.DefaultRouter()
 v1_router.register(r'train/mai/(?P<serial>[\w]+)/(?P<number>[\w]+)',
@@ -29,7 +29,6 @@ v1_router.register(r'train/list/(?P<number>[\w]+)',
 v1_router.register(r'metrolog/list',
                    MeasurementSet,
                    basename='list')
-
 
 # v1_router.register(r'costs', CostViewSet, basename='costs')
 # v1_router.register(r'groups', GroupViewSet)

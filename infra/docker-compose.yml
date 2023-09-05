@@ -32,16 +32,7 @@ services:
       - web
     restart: always
 
-  bot:
-    image: dmitrypetukhov/bot:v1
-    restart: always
-    depends_on:
-      - web
-    volumes:
-      - bot_value:/app/
-
 volumes:
   static_value:
   media_value:
   db_value:
-  bot_value:

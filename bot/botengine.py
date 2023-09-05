@@ -16,15 +16,14 @@ def measurement(measurement):
     messege += (f"\n /{id} {location}: {description} (SN: {seral_number}), "
                 f"расположение: {place}, осталось дней: {days}")
 
-# def get_measurement(METROLOG_ENDPOINT, API_TOKEN, data) -> str:
-#     """Запрос данных об одной системе измерения."""
-#     response = requests.get(
-#         url=METROLOG_ENDPOINT + f'/{data}',
-#         headers={'Authorization': API_TOKEN},
-#     )
-#     check_server(response)
+    # def get_measurement(METROLOG_ENDPOINT, API_TOKEN, data) -> str:
+    #     """Запрос данных об одной системе измерения."""
+    #     response = requests.get(
+    #         url=METROLOG_ENDPOINT + f'/{data}',
+    #         headers={'Authorization': API_TOKEN},
+    #     )
+    #     check_server(response)
     return messege
-
 
 
 def metrolog(measurement):

@@ -1,6 +1,6 @@
+from metrolog.models import Measurement
 from rest_framework import serializers
 from train.models import Train, DoneMaiDate, Maintenance, Serial, Cases
-from metrolog.models import Measurement
 
 
 class MeasurementSerializer(serializers.ModelSerializer):
