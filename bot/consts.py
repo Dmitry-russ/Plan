@@ -20,4 +20,6 @@ USERS: list = ['dmitrypetukhovekb',
                'Baggravation',
                'Rusnik49',
                'NicolaiSha',
-               'SV_066', ]
+               'SV_066',
+               'Konatantin',
+               'SubbotinSN', ]

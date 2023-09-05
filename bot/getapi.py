@@ -32,14 +32,14 @@ def get_report(MAI_ENDPOINT, API_TOKEN, text) -> str:
     return response.json()
 
 
-# def get_photo(PHOTO_ENDPOINT, API_TOKEN, data) -> str:
-#     """ЗАпрос фото."""
-#     response = requests.get(
-#         url=PHOTO_ENDPOINT + f'/{data}',
-#         headers={'Authorization': API_TOKEN},
-#     )
-#     check_server(response)
-#     return response.json()
+def get_photo(photo_endpoint, API_TOKEN) -> str:
+    """ЗАпрос фото."""
+    response = requests.get(
+        url=photo_endpoint,
+        headers={'Authorization': API_TOKEN},
+    )
+    check_server(response)
+    return response.content
 
 
 def get_measurement(METROLOG_ENDPOINT, API_TOKEN, data) -> str:

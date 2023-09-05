@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from getapi import check_train, get_report
 
 
@@ -14,7 +14,15 @@ def measurement(measurement):
     days = measurement.get('days')
     place = measurement.get('place')
     messege += (f"\n /{id} {location}: {description} (SN: {seral_number}), "
-                f"расположение: {place}, осталось дней: {days}")
+                f"расположение: {place}, осталось дней: {days}.")
+    if file:
+        keyboard: list = []
+        keyboard.append([InlineKeyboardButton(
+            "Посмотреть фото",
+            callback_data=file)])
+        reply_markup = InlineKeyboardMarkup(keyboard)
+    else:
+        reply_markup = None
 
     # def get_measurement(METROLOG_ENDPOINT, API_TOKEN, data) -> str:
     #     """Запрос данных об одной системе измерения."""
@@ -23,13 +31,13 @@ def measurement(measurement):
     #         headers={'Authorization': API_TOKEN},
     #     )
     #     check_server(response)
-    return messege
+    return messege, reply_markup
 
 
 def metrolog(measurement):
     """Обработка списка по метрлогии перед выводом."""
     if len(measurement) == 0:
-        return 'не найдено'
+        return 'СИ не найдено.'
     messege: str = ''
     for measur in measurement:
         description = measur.get('description')
