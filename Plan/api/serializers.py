@@ -1,4 +1,4 @@
-from metrolog.models import Measurement
+from metrolog.models import Measurement, Certificate
 from rest_framework import serializers
 from train.models import Train, DoneMaiDate, Maintenance, Serial, Cases
 
@@ -14,6 +14,18 @@ class MeasurementSerializer(serializers.ModelSerializer):
                   'file',
                   'id',
                   'place',)
+        
+
+class CertificateSerializer(serializers.ModelSerializer):
+    metrolog = MeasurementSerializer()
+
+    class Meta:
+        model = Certificate
+        fields = ('file',
+                  'name',
+                  'id',
+                  'default',
+                  'metrolog',)
 
 
 class SerialSerializer(serializers.ModelSerializer):

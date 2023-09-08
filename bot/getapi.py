@@ -32,14 +32,38 @@ def get_report(MAI_ENDPOINT, API_TOKEN, text) -> str:
     return response.json()
 
 
-def get_photo(photo_endpoint, API_TOKEN) -> str:
-    """ЗАпрос фото."""
+def get_photo(url, API_TOKEN) -> str:
+    """Запрос фото."""
+    photo_endpoint = f'http://194.187.122.3{url[15:]}'
     response = requests.get(
         url=photo_endpoint,
         headers={'Authorization': API_TOKEN},
     )
     check_server(response)
     return response.content
+
+
+def get_file(url, API_TOKEN) -> str:
+    """Запрос файла."""
+    photo_endpoint = f'http://194.187.122.3{url[15:]}'
+    response = requests.get(
+        url=photo_endpoint,
+        headers={'Authorization': API_TOKEN},
+    )
+    check_server(response)
+    return response.content
+
+
+def get_certificates(id, CERTIFICATES_ENDPOINT, API_TOKEN) -> str:
+    """Запрос списка сертификатов."""
+    url = f'{CERTIFICATES_ENDPOINT}{id}/'
+    response = requests.get(
+        url=url,
+        headers={'Authorization': API_TOKEN},
+        stream=True,
+    )
+    check_server(response)
+    return response.json()
 
 
 def get_measurement(METROLOG_ENDPOINT, API_TOKEN, data) -> str:
@@ -69,6 +93,8 @@ def check_train(TRAIN_ENDPOINT, API_TOKEN, text) -> list:
             url=TRAIN_ENDPOINT + f'{text}/',
             headers={'Authorization': API_TOKEN},
         )
+        if response.status_code == HTTPStatus.NOT_FOUND:
+            return None
         check_server(response)
         return response.json()
     response = requests.get(

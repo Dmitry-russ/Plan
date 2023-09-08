@@ -136,7 +136,7 @@ class Certificate(CreatedModel):
 
     author = models.ForeignKey(User,
                                on_delete=models.SET_NULL,
-                               related_name='certificate',
+                               related_name='certificateauthor',
                                null=True, )
     metrolog = models.ForeignKey(Measurement,
                                  on_delete=models.CASCADE,
@@ -151,6 +151,9 @@ class Certificate(CreatedModel):
                             verbose_name="Новый сертификат", )
     default = models.BooleanField(default=True,
                                   verbose_name="Актуальность сертификата", )
+
+    def __str__(self) -> str:
+        return self.name
 
 
 class Manual(CreatedModel):

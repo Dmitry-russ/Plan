@@ -1,7 +1,8 @@
 from datetime import datetime, timedelta
+from itertools import chain
 
 from django.db.models import Max
-from metrolog.models import Measurement
+from metrolog.models import Measurement, Certificate
 from rest_framework import viewsets, filters
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
@@ -12,20 +13,30 @@ from .serializers import (DoneMaiDateSerializer,
                           TrainSerializer,
                           CaseSerializer,
                           MaintenanceSerializer,
-                          MeasurementSerializer, )
+                          MeasurementSerializer,
+                          CertificateSerializer, )
 
 DAYS_GORISONT = 90
 MAI_REPORT_COUNT = 4
+
+
+class CertificateSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = CertificateSerializer
+    permission_classes = (IsStaff,)
+
+    def get_queryset(self):
+        return Certificate.objects.filter(
+            metrolog__id=self.kwargs.get('id'), default=True)
 
 
 class MeasurementSet(viewsets.ReadOnlyModelViewSet):
     queryset = Measurement.objects.all()
     serializer_class = MeasurementSerializer
     permission_classes = (IsStaff,)
-    ordering_fields = ['location']
-    ordering = ['location']
-    filter_backends = [filters.SearchFilter]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['description', 'seral_number']
+    ordering_fields = ['location', ]
+    ordering = ['location', ]
 
     @action(detail=True, methods=["GET"], )
     def measurement(self, request, pk):

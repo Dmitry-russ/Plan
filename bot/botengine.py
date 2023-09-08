@@ -15,22 +15,17 @@ def measurement(measurement):
     place = measurement.get('place')
     messege += (f"\n /{id} {location}: {description} (SN: {seral_number}), "
                 f"расположение: {place}, осталось дней: {days}.")
+    keyboard: list = []
     if file:
-        keyboard: list = []
         keyboard.append([InlineKeyboardButton(
             "Посмотреть фото",
             callback_data=file)])
-        reply_markup = InlineKeyboardMarkup(keyboard)
-    else:
+    keyboard.append([InlineKeyboardButton(
+            "Посмотреть сертификат",
+            callback_data=f'поиск сертификата {id}')])
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    if len(keyboard) == 0:
         reply_markup = None
-
-    # def get_measurement(METROLOG_ENDPOINT, API_TOKEN, data) -> str:
-    #     """Запрос данных об одной системе измерения."""
-    #     response = requests.get(
-    #         url=METROLOG_ENDPOINT + f'/{data}',
-    #         headers={'Authorization': API_TOKEN},
-    #     )
-    #     check_server(response)
     return messege, reply_markup
 
 
@@ -39,12 +34,16 @@ def metrolog(measurement):
     if len(measurement) == 0:
         return 'СИ не найдено.'
     messege: str = ''
+    location_pre: str = ''
     for measur in measurement:
         description = measur.get('description')
         seral_number = measur.get('seral_number')
         location = measur.get('location')
         id = measur.get('id')
+        if location_pre != location and location_pre != "":
+            messege += '\n--------------------'
         messege += f"\n /{id} {location}: {description} (SN: {seral_number})"
+        location_pre = location
     return messege
 
 

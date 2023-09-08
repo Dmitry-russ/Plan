@@ -10,10 +10,10 @@ from telegram.ext import (CommandHandler, Updater, MessageHandler,
 from botengine import summerwinter, metrolog, measurement
 from consts import (TRAIN_ENDPOINT, MAI_ENDPOINT, USER_ENDPOINT, USERS,
                     CASE_ENDPOINT, MAI_NEXT_ENDPOINT, TRAIN_ALL_ENDPOINT,
-                    METROLOG_ENDPOINT)
+                    METROLOG_ENDPOINT, CERTIFICATES_ENDPOINT)
 from getapi import (get_token, check_train,
                     finde_mai, finde_case, get_metrolog,
-                    get_measurement, get_photo)
+                    get_measurement, get_photo, get_certificates, get_file)
 from utils import check_user, send_me_messege
 
 load_dotenv()
@@ -97,9 +97,8 @@ def have_massege(update, context):
                 chat_id=chat_id,
                 text=messege, )
         return
-
     trains = check_train(TRAIN_ENDPOINT, API_TOKEN, text)
-    if len(trains) > 0:
+    if trains is not None and len(trains) > 0:
         keyboard: list = []
         for train in trains:
             serial_slug = train.get('serial').get('slug')
@@ -192,11 +191,24 @@ def button(update, context):
         return
 
     if 'metrolog' in text:
-        'http://web:8000/media/metrolog/vsm_S1nLXTw.jpg'
-        url = f'http://194.187.122.3{text[15:]}'
-        file = get_photo(url, API_TOKEN)
+        file = get_photo(text, API_TOKEN)
         context.bot.send_photo(chat_id, file)
         return
+
+    if 'поиск сертификата' in text:
+        textchange = text.split()
+        id = int(textchange[2])
+        certificates = get_certificates(id, CERTIFICATES_ENDPOINT, API_TOKEN)
+        if len(certificates) == 0:
+            context.bot.send_message(
+                chat_id=chat_id,
+                text='Сертификаты не найдены')
+        for cert in certificates:
+            url = cert.get('file')
+            file = get_file(url, API_TOKEN)
+            context.bot.send_document(chat_id, file)
+        return
+
     if 'case' not in text:
         result_messege, reply_markup = finde_mai(MAI_ENDPOINT,
                                                  MAI_NEXT_ENDPOINT,

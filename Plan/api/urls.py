@@ -5,7 +5,8 @@ from .views import (DoneMaiDateViewSet,
                     TrainViewSet,
                     CaseViewSet,
                     MaiNumViewSet,
-                    MeasurementSet, )
+                    MeasurementSet,
+                    CertificateSet, )
 
 v1_router = routers.DefaultRouter()
 v1_router.register(r'train/mai/(?P<serial>[\w]+)/(?P<number>[\w]+)',
@@ -29,6 +30,9 @@ v1_router.register(r'train/list/(?P<number>[\w]+)',
 v1_router.register(r'metrolog/list',
                    MeasurementSet,
                    basename='list')
+v1_router.register(r'certificate/list/(?P<id>[\w]+)',
+                   CertificateSet,
+                   basename='certificatelist')
 
 # v1_router.register(r'costs', CostViewSet, basename='costs')
 # v1_router.register(r'groups', GroupViewSet)
@@ -36,5 +40,6 @@ v1_router.register(r'metrolog/list',
 app_name = 'api'
 urlpatterns = [
     path('v1/', include(v1_router.urls)),
+    # path('v1/certificate/list/<int:id>/', CertificateSet),
     # path('v1/metrolog/list/', MeasurementSet.as_view()),
 ]
