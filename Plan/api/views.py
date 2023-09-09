@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-from itertools import chain
 
 from django.db.models import Max
 from metrolog.models import Measurement, Certificate

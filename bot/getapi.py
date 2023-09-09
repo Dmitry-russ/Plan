@@ -1,5 +1,7 @@
 import datetime
 from http import HTTPStatus
+from pathlib import Path
+from urllib.parse import urlparse, unquote
 
 import requests
 
@@ -33,7 +35,7 @@ def get_report(MAI_ENDPOINT, API_TOKEN, text) -> str:
 
 
 def get_photo(url, API_TOKEN) -> str:
-    """Запрос фото."""
+    """Запрос фото системы измерения."""
     photo_endpoint = f'http://194.187.122.3{url[15:]}'
     response = requests.get(
         url=photo_endpoint,
@@ -44,14 +46,12 @@ def get_photo(url, API_TOKEN) -> str:
 
 
 def get_file(url, API_TOKEN) -> str:
-    """Запрос файла."""
-    photo_endpoint = f'http://194.187.122.3{url[15:]}'
-    response = requests.get(
-        url=photo_endpoint,
-        headers={'Authorization': API_TOKEN},
-    )
-    check_server(response)
-    return response.content
+    """Запрос файла сертификата системы измерения."""
+    url_parsed = urlparse(url)
+    file_path = Path(
+        "/metrolog/") / unquote(Path(url_parsed.path).name)
+    document = open(file_path, 'rb', )
+    return document
 
 
 def get_certificates(id, CERTIFICATES_ENDPOINT, API_TOKEN) -> str:

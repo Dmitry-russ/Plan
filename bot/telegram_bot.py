@@ -7,12 +7,12 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (CommandHandler, Updater, MessageHandler,
                           Filters, CallbackQueryHandler)
 
-from botengine import summerwinter, metrolog, measurement
+from botengine import summerwinter, metrolog_list, measurement
 from consts import (TRAIN_ENDPOINT, MAI_ENDPOINT, USER_ENDPOINT, USERS,
                     CASE_ENDPOINT, MAI_NEXT_ENDPOINT, TRAIN_ALL_ENDPOINT,
                     METROLOG_ENDPOINT, CERTIFICATES_ENDPOINT)
 from getapi import (get_token, check_train,
-                    finde_mai, finde_case, get_metrolog,
+                    finde_mai, finde_case,
                     get_measurement, get_photo, get_certificates, get_file)
 from utils import check_user, send_me_messege
 
@@ -67,11 +67,13 @@ def error_handler(update, context):
                'Обратитесь к администратору или попробуйте еще раз.')
     if str(context.error) == 'Timed out':
         messege = 'Ошибка Timed out. Повторите запрос.'
+    if str(context.error) == 'Message is too long':
+        messege = 'Слишком много вариантов. Уточните запрос.'
     user_chat_id = update.effective_chat.id
     logging.critical(f'{messege_for_me}')
     context.bot.send_message(chat_id=user_chat_id,
                              text=messege)
-    send_me_messege(context, MY_CHAT_ID, messege_for_me)
+    # send_me_messege(context, MY_CHAT_ID, messege_for_me)
 
 
 def have_massege(update, context):
@@ -84,19 +86,20 @@ def have_massege(update, context):
 
     if '/' in text:
         data = text.replace('/', '')
-        result = get_measurement(METROLOG_ENDPOINT, API_TOKEN, data)
-        messege, reply_markup = measurement(result)
+        messege, reply_markup = measurement(
+            get_measurement(METROLOG_ENDPOINT, API_TOKEN, data), API_TOKEN)
         if reply_markup:
             context.bot.send_message(
                 chat_id=chat_id,
                 text=messege,
                 reply_markup=reply_markup, )
         else:
-            messege += ' Фото не найдено.'
+            messege += ' Фото и сертификатов не найдено.'
             context.bot.send_message(
                 chat_id=chat_id,
                 text=messege, )
         return
+
     trains = check_train(TRAIN_ENDPOINT, API_TOKEN, text)
     if trains is not None and len(trains) > 0:
         keyboard: list = []
@@ -115,31 +118,9 @@ def have_massege(update, context):
                                  text="Выбрать поезд или продолжить поиск СИ.",
                                  reply_markup=reply_markup)
         return
-    if trains is None or len(trains) < 1:
-        context.bot.send_message(
-            chat_id=chat_id,
-            text='Поезд не найден, продолжаю поиск по метрологии.')
 
-    result = get_metrolog(METROLOG_ENDPOINT, API_TOKEN, text)
-    result_text = metrolog(result)
-    context.bot.send_message(
-        chat_id=chat_id,
-        text=result_text)
-
-    # if len(trains) == 1:
-    #     serial_slug = trains[0].get('serial').get('slug')
-    #     serial_serial = trains[0].get('serial').get('serial')
-    #     text = f'{serial_slug} {text}'
-    #     result_messege, reply_markup = finde_mai(MAI_ENDPOINT,
-    #                                              MAI_NEXT_ENDPOINT,
-    #                                              API_TOKEN,
-    #                                              text, )
-    #     context.bot.send_message(
-    #         chat_id=chat_id,
-    #         text=result_messege)
-    #     context.bot.send_message(chat_id=chat_id,
-    #                              text='Вывести замечания по поезду:',
-    #                              reply_markup=reply_markup)
+    #  если поезда не найдены запускается поиск по метрологии
+    metrolog_list(context, chat_id, METROLOG_ENDPOINT, API_TOKEN, text)
 
 
 def summer(update, context):
@@ -181,28 +162,26 @@ def button(update, context):
     text = query.data
 
     if 'продолжить' in text:
+        logging.info(f'Пользователь {update.effective_chat.username},'
+                     f'чат {update.effective_chat.id}, продолжил поиск')
         textchange = text.split()
         data = textchange[1]
-        result = get_metrolog(METROLOG_ENDPOINT, API_TOKEN, data)
-        result_text = metrolog(result)
-        context.bot.send_message(
-            chat_id=chat_id,
-            text=result_text)
+        metrolog_list(context, chat_id, METROLOG_ENDPOINT, API_TOKEN, data)
         return
 
     if 'metrolog' in text:
+        logging.info(f'Пользователь {update.effective_chat.username},'
+                     f'чат {update.effective_chat.id}, запросил фото')
         file = get_photo(text, API_TOKEN)
         context.bot.send_photo(chat_id, file)
         return
 
     if 'поиск сертификата' in text:
+        logging.info(f'Пользователь {update.effective_chat.username},'
+                     f'чат {update.effective_chat.id}, запросил сертификат')
         textchange = text.split()
         id = int(textchange[2])
         certificates = get_certificates(id, CERTIFICATES_ENDPOINT, API_TOKEN)
-        if len(certificates) == 0:
-            context.bot.send_message(
-                chat_id=chat_id,
-                text='Сертификаты не найдены')
         for cert in certificates:
             url = cert.get('file')
             file = get_file(url, API_TOKEN)

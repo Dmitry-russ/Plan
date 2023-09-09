@@ -7,7 +7,6 @@ MAI_NEXT_ENDPOINT: str = 'http://194.187.122.3/api/v1/train/maintenance/'
 METROLOG_ENDPOINT: str = 'http://194.187.122.3/api/v1/metrolog/list'
 CERTIFICATES_ENDPOINT: str = 'http://194.187.122.3/api/v1/certificate/list/'
 
-
 # TRAIN_ENDPOINT: str = 'http://127.0.0.1:8000/api/v1/train/list/'
 # TRAIN_ALL_ENDPOINT: str = 'http://127.0.0.1:8000/api/v1/train/listall/'
 # MAI_ENDPOINT: str = 'http://127.0.0.1:8000/api/v1/train/mai/'
@@ -18,11 +17,17 @@ CERTIFICATES_ENDPOINT: str = 'http://194.187.122.3/api/v1/certificate/list/'
 # CERTIFICATES_ENDPOINT: str = 'http://127.0.0.1:8000/api/v1/certificate/list/'
 
 USERS: list = ['dmitrypetukhovekb',
-               'smnvkrll',
-               'nkiryuhin93',
-               'Baggravation',
-               'Rusnik49',
-               'NicolaiSha',
-               'SV_066',
-               'Konatantin',
-               'SubbotinSN', ]
+               'smnvkrll',  # Кирилл
+               'nkiryuhin93',  # Никита
+               'Baggravation',  # Игорь
+               'Rusnik49',  # Коля Русинов
+               'NicolaiSha',  # Коля Шамшаков
+               'SV_066',  # Сергей Зырянкин
+               'Konatantin',  # Костя
+               'SubbotinSN',  # Сергей Субботин
+               'Sizov_Pavel',  # Паша
+               'EvgeniiNalimov',  # Женя
+               'dskazakovtsev',  # Дима
+               'VladimirB01',  # Вова Белов
+               'Denisov1',  # Вова Денисов
+               'TonkovSergey', ]  # Сергей Тонков

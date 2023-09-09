@@ -19,6 +19,7 @@ def case_buttons(serial_serial, train_number, serial_slug, ):
 
 
 def send_me_messege(context, MY_CHAT_ID, messege):
+    """Отправка сообщения в мой чат."""
     context.bot.send_message(
         chat_id=MY_CHAT_ID,
         text=messege,

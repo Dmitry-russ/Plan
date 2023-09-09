@@ -1,9 +1,14 @@
 from datetime import datetime
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-from getapi import check_train, get_report
+
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ParseMode
+
+from consts import CERTIFICATES_ENDPOINT
+from getapi import check_train, get_report, get_certificates, get_metrolog
+
+DAYS_LIMIT_METROLOG = 10
 
 
-def measurement(measurement):
+def measurement(measurement, API_TOKEN):
     """Обработка одной системы измерения."""
     messege: str = ''
     description = measurement.get('description')
@@ -20,7 +25,8 @@ def measurement(measurement):
         keyboard.append([InlineKeyboardButton(
             "Посмотреть фото",
             callback_data=file)])
-    keyboard.append([InlineKeyboardButton(
+    if get_certificates(id, CERTIFICATES_ENDPOINT, API_TOKEN):
+        keyboard.append([InlineKeyboardButton(
             "Посмотреть сертификат",
             callback_data=f'поиск сертификата {id}')])
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -40,9 +46,15 @@ def metrolog(measurement):
         seral_number = measur.get('seral_number')
         location = measur.get('location')
         id = measur.get('id')
+        days = measur.get('days')
         if location_pre != location and location_pre != "":
             messege += '\n--------------------'
-        messege += f"\n /{id} {location}: {description} (SN: {seral_number})"
+        if int(days) < DAYS_LIMIT_METROLOG:
+            messege += (f"\n /{id} <code><b>{location}: {description} "
+                        f"(SN: {seral_number}), дней: {days}</b></code>")
+        else:
+            messege += (f"\n /{id} {location}: {description} "
+                        f"(SN: {seral_number}), дней: {days}")
         location_pre = location
     return messege
 
@@ -91,3 +103,13 @@ def summerwinter(update, context, text,
     context.bot.send_message(
         chat_id=chat_id,
         text=messege)
+
+
+def metrolog_list(context, chat_id, METROLOG_ENDPOINT, API_TOKEN, data):
+    """Поиск и вывод в бот списка сертификатов."""
+    result = get_metrolog(METROLOG_ENDPOINT, API_TOKEN, data)
+    result_text = metrolog(result)
+    context.bot.send_message(
+        chat_id=chat_id,
+        text=result_text,
+        parse_mode=ParseMode.HTML, )
