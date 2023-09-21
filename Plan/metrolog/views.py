@@ -165,7 +165,6 @@ def mai_export(request):
         'Фактическое местоположение',
         'Наличие в акте РЖД',
         'Примечание',
-        'Дней до конца поверки',
     )
     data = []
     data = tablib.Dataset(*data, headers=headers)
@@ -188,7 +187,6 @@ def mai_export(request):
             metr.place,
             metr.in_act,
             metr.note,
-            metr.get_days(),
         ])
     response = HttpResponse(
         data.export('xls'),

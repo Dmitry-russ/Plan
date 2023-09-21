@@ -1,58 +1,87 @@
 {% extends 'base.html' %}
 {% block title %}
-    {% if is_edit %}
-        {{ metrolog.description }} (Серийный номер: {{ metrolog.seral_number }})
-    {% else %}
-        Сертификаты.
-    {% endif %}
+    Сертификаты.
 {% endblock %}
 {% block name %}
+    <div class="card bg-secondary border-light">
 
-    {% if certificates %}
-        {% for cert in certificates %}
-            <li><a type="button" class="btn btn-outline-light"
-                   href="{{ media }}{{ cert.file }}">
-                Открыть сертификат: {{ cert.name }}</a>
-                <a type="button" class="btn btn-outline-light" onclick="clicked(event)"
-                   href="{% url 'metrolog:certificate_delete'  cert.id %}">
-                    Удалить.</a>
-                {% if cert.default %}
-                    <a type="button" class="btn btn-outline-light"
-                       href="{% url 'metrolog:certificate_default' cert.id %}">
-                        Актуальный сертификат. Сделать устаревшим.</a>
-                {% else %}
-                    <a type="button" class="btn btn-outline-light"
-                       href="{% url 'metrolog:certificate_default' cert.id %}">
-                        Устаревший сертификат. Сделать актуальным.</a>
-                {% endif %}
+        <div class="card-header bg-secondary border-light">
+            {{ metrolog.description }} (Серийный номер: {{ metrolog.seral_number }})
+        </div>
+
+        <ul class="list-group list-group-flush bg-secondary border-light">
+            {% if certificates %}
+                {% for cert in certificates %}
+                    <li class="list-group-item text-bg-secondary bg-secondary text-white border-light">
+                        <a type="button"
+                           class="btn btn-outline-light"
+                           href="{{ media }}{{ cert.file }}">
+                            Открыть сертификат: {{ cert.name }}</a>
+                        <a type="button" class="btn btn-outline-light" onclick="clicked(event)"
+                           href="{% url 'metrolog:certificate_delete' cert.id %}">
+                            Удалить.</a>
+                        {% if cert.default %}
+                            Актуальный сертификат.
+                            <a type="button" class="btn btn-outline-light"
+                               href="{% url 'metrolog:certificate_default' cert.id %}">
+                                Сделать устаревшим.</a>
+                        {% else %}
+                            <font color="red">Устаревший сертификат. </font>
+                            <a type="button" class="btn btn-outline-light"
+                               href="{% url 'metrolog:certificate_default' cert.id %}">
+                                Сделать актуальным.</a>
+                        {% endif %}
 
 
-            </li>
-        {% endfor %}
-        <br>
-    {% endif %}
+                    </li>
+                {% endfor %}
+            {% endif %}
 
-    <div class="row">
-        <article class="col-12 col-md-9">
-            <form method="post" enctype="multipart/form-data"
-                  action="{% url 'metrolog:certificate_create' metrolog.id %}">
+        </ul>
+    </div>
+    <br>
+    <div class="card bg-success border-light ">
+        <div class="card-header bg-success border-light">
+            Добавление нового сертификата.
+        </div>
+        <form method="post" enctype="multipart/form-data"
+              action="{% url 'metrolog:certificate_create' metrolog.id %}">
 
-                {% csrf_token %}
-                <div class="mb-3">
-                    {{ form.as_p }}
-                </div>
+            {% csrf_token %}
 
+            {% for field in form %}
+
+                <li class="list-group-item bg-success text-white border-light">
+                    {{ field.errors }}
+                    <label for="inputPassword5" class="form-label text-white">{{ field.label_tag }}</label>
+                    <div>{{ field }}</div>
+
+
+                </li>
+
+            {% endfor %}
+            <li class="list-group-item bg-success text-white border-light">
                 <button type="submit" class="btn btn-light">
                     Сохранить новый сертификат
                 </button>
-                <a type="button" class="btn btn-light"
-                   href="{% url 'metrolog:metrolog_small_report' %}">Вернуться к сипску</a>
-                <a type="button" class="btn btn-light"
-                   href="{% url 'metrolog:metrolog_detail' metrolog.id %}">Вернуться к системе измерения</a>
-            </form>
-        </article>
+            </li>
+            </ul>
     </div>
+
+
+
+
+
+    </form>
+    <br>
+    <a type="button" class="btn btn-light"
+       href="{% url 'metrolog:metrolog_small_report' %}">Вернуться к сипску</a>
+    <a type="button" class="btn btn-light"
+       href="{% url 'metrolog:metrolog_detail' metrolog.id %}">Вернуться к системе измерения</a>
     {% include 'includes/paginator.html' %}
+
+
+
 
     <script>
         function clicked(e) {
@@ -61,5 +90,4 @@
             }
         }
     </script>
-
 {% endblock %}

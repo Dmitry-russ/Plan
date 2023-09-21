@@ -33,27 +33,43 @@ class NewMetrolog(forms.ModelForm):
         required=False,
     ),
     place = forms.CharField(
-        widget=forms.Textarea(attrs={'cols': 10, 'rows': 1}),
+        # widget=forms.TextInput(attrs={'size': '90'}),
         label="Место расположения", )
     description = forms.CharField(
-        widget=forms.Textarea(attrs={'cols': 28, 'rows': 3}),
-        label="Описание", )
+        widget=forms.TextInput(attrs={'size': '90'}),
+        label="Описание (название)", )
     note = forms.CharField(
-        widget=forms.Textarea(attrs={'cols': 30, 'rows': 3}),
+        widget=forms.TextInput(attrs={'size': '90'}),
         label="Примечание",
         required=False, )
     seral_number = forms.CharField(
-        widget=forms.Textarea(attrs={'cols': 20, 'rows': 1}),
+        # widget=forms.TextInput(attrs={'size': '50'}),
         label="Сериный номер", required=False, )
+    type = forms.CharField(
+        widget=forms.TextInput(attrs={'size': '90'}),
+        label="Тип СИ", required=False, )
+    organization = forms.CharField(
+        widget=forms.TextInput(attrs={'size': '90'}),
+        label="Организация, проводящая метрологический контроль",
+        required=False, )
+    organization_fact = forms.CharField(
+        widget=forms.TextInput(attrs={'size': '90'}),
+        label="Организация, фактически проводившая метрологический контроль",
+        required=False, )
+    location = forms.ChoiceField(
+        widget=forms.Select(attrs={'size': '1'}),
+        choices=ALL_PLACE_CHOICES,
+        label="Локация",
+        required=True, )
 
     class Meta:
         model = Measurement
-        fields = ('file', 'type', 'dunumber',
-                  'description', 'location', 'model',
-                  'number', 'control_type', 'periodicity', 'organization',
-                  'organization_fact',
-                  'seral_number', 'date_control', 'date_end',
-                  'place', 'in_act', 'note',)
+        fields = ('file', 'location',
+                  'description', 'seral_number', 'date_control', 'date_end',
+                  'place', 'periodicity', 'control_type', 'dunumber', 'model',
+                  'date_control', 'number',
+                  'in_act', 'organization',
+                  'organization_fact', 'note', 'type',)
 
 
 class NewCertificate(forms.ModelForm):

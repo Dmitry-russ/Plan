@@ -1,9 +1,11 @@
 {% extends 'base.html' %}
 {% load dict_key %}
-{% block title %}Системы измерения.{% endblock %}
+{% block title %}Таблица учета средств измерения.{% endblock %}
 {% block content %}
 
+
     Фильтрация данных:
+    <br>
     <form action="" method="get">
         {{ filter_form.as_p }}
         <input type="submit" value="Отфильтровать" class="btn btn-outline-light">
@@ -36,7 +38,7 @@
             <th class="col">Локация</th>
             <th class="col">Расположение</th>
             <th class="col">Дата выдачи сертификата</th>
-            <th class="col">Дата окончания действия сертификата</th>
+            <th class="col">Дата окончания сертификата</th>
             <th class="col">Осталось дней</th>
         </tr>
         </thead>
@@ -53,14 +55,14 @@
                         {% else %}
                     <tr>
                 {% endif %}
-            <td><a type="button" style="width: 20rem;"
-                   class="btn btn-outline-dark"
-                   href="{% url 'metrolog:metrolog_detail' metr.id %}"> {{ metr.description }} </a></td>
+            <td class="col"><a type="button" style=" text-align:left"
+                               class="btn btn-outline-dark text-left"
+                               href="{% url 'metrolog:metrolog_detail' metr.id %}"> {{ metr.description }} </a></td>
             <td>{{ metr.seral_number }}</td>
             <td>{{ metr.location }}</td>
             <td>{{ metr.place }}</td>
-            <td>{{ metr.date_control }}</td>
-            <td>{{ metr.date_end }}</td>
+            <td>{{ metr.date_control|date:"d.m.Y" }}</td>
+            <td>{{ metr.date_end|date:"d.m.Y" }}</td>
             <td>{{ metr.days }}</td>
             </tr>
 
