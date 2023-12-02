@@ -169,10 +169,14 @@ def button(update, context):
         metrolog_list(context, chat_id, METROLOG_ENDPOINT, API_TOKEN, data)
         return
 
-    if 'metrolog' in text:
+    if 'фото' in text:
         logging.info(f'Пользователь {update.effective_chat.username},'
                      f'чат {update.effective_chat.id}, запросил фото')
-        file = get_photo(text, API_TOKEN)
+        textchange = text.split()
+        id = int(textchange[1])
+        measurement = get_measurement(METROLOG_ENDPOINT, API_TOKEN, id)
+        url = measurement.get('file')
+        file = get_photo(url, API_TOKEN)
         context.bot.send_photo(chat_id, file)
         return
 

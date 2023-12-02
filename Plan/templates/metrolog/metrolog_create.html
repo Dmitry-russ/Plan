@@ -43,7 +43,13 @@
                     {% endif %}
                 </li>
             {% else %}
-                <li class="list-group-item bg-secondary text-white border-light">Актуальных сертификатов нет.</li>
+                <li class="list-group-item bg-secondary text-white border-light">Актуальных сертификатов нет. 
+                    {% if is_edit %}
+                    <a type="button" class="btn btn-light"
+                       href="{% url 'metrolog:certificate_create' metrolog.id %}">Просмотреть/добавить
+                        сертификаты</a>
+                {% endif %}
+                </li>
             {% endif %}
 
             {% if is_edit %}

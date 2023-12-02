@@ -24,7 +24,7 @@ def measurement(measurement, API_TOKEN):
     if file:
         keyboard.append([InlineKeyboardButton(
             "Посмотреть фото",
-            callback_data=file)])
+            callback_data=f'фото {id}')])
     if get_certificates(id, CERTIFICATES_ENDPOINT, API_TOKEN):
         keyboard.append([InlineKeyboardButton(
             "Посмотреть сертификат",
