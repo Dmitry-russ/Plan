@@ -181,6 +181,9 @@ class Maintenance(CreatedModel):
             result += f'{self.mileage} '
         return result
 
+    class Meta:
+        ordering = ["number"]
+
 
 class DoneMaiDate(CreatedModel):
     """Модель хранения данных о проведенных ТО."""
