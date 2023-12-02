@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Serial, Train, Cases, Maintenance
+from .models import Serial, Train, Cases, Maintenance, DoneMaiDate
 
 
 class SerialAdmin(admin.ModelAdmin):
@@ -33,7 +33,17 @@ class MaintenanceAdmin(admin.ModelAdmin):
     empty_value_display = '-пусто-'
 
 
+class DoneMaiDateAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'author', 'train',
+                    'maintenance', 'maintenance_date', 'place', 'mileage',
+                    'comment', 'musthave',)
+    search_fields = ('train', 'maintenance',)
+    list_filter = ('train',)
+    empty_value_display = '-пусто-'
+
+
 admin.site.register(Serial, SerialAdmin)
 admin.site.register(Train, TrainAdmin)
 admin.site.register(Cases, CasesAdmin)
 admin.site.register(Maintenance, MaintenanceAdmin)
+admin.site.register(DoneMaiDate, DoneMaiDateAdmin)
