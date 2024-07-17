@@ -124,8 +124,14 @@ def finde_mai(MAI_ENDPOINT, MAI_NEXT_ENDPOINT, API_TOKEN, text) -> requests:
     )
     check_server(response)
     result = response.json()
+    # проверка на отсутвие инспекций
     if len(result) == 0:
-        return 'Инспекций еще не проводилось.'
+        result_messege = 'Инспекций еще не проводилось.'
+        reply_markup = case_buttons(textchange[0],
+                                    textchange[1],
+                                    textchange[0], )
+        return result_messege, reply_markup
+    
     result_messege: str = ''
 
     # смотрю следующую инспекцию
