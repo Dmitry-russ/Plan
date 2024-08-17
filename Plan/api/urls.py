@@ -6,7 +6,8 @@ from .views import (DoneMaiDateViewSet,
                     CaseViewSet,
                     MaiNumViewSet,
                     MeasurementSet,
-                    CertificateSet, )
+                    CertificateSet,
+                    UserDataViewSet, )
 
 v1_router = routers.DefaultRouter()
 v1_router.register(r'train/mai/(?P<serial>[\w]+)/(?P<number>[\w]+)',
@@ -33,6 +34,9 @@ v1_router.register(r'metrolog/list',
 v1_router.register(r'certificate/list/(?P<id>[\w]+)',
                    CertificateSet,
                    basename='certificatelist')
+v1_router.register(r'user/telegram/(?P<user>[\w]+)',
+                   UserDataViewSet,
+                   basename='telegramlist')
 
 # v1_router.register(r'costs', CostViewSet, basename='costs')
 # v1_router.register(r'groups', GroupViewSet)

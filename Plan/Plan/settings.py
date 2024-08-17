@@ -5,14 +5,14 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 load_dotenv()
+SECRET_KEY = os.getenv('SECRET_KEY')
+DEBUG = True
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv('SECRET_KEY')
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = None
 
-DEBUG = True
 
 ALLOWED_HOSTS = ['*', ]
 INSTALLED_APPS = [
@@ -157,7 +157,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=60),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=3650),
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 

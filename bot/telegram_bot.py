@@ -8,12 +8,14 @@ from telegram.ext import (CommandHandler, Updater, MessageHandler,
                           Filters, CallbackQueryHandler)
 
 from botengine import summerwinter, metrolog_list, measurement
-from consts import (TRAIN_ENDPOINT, MAI_ENDPOINT, USER_ENDPOINT, USERS,
+from consts import (TRAIN_ENDPOINT, MAI_ENDPOINT, USER_ENDPOINT,
                     CASE_ENDPOINT, MAI_NEXT_ENDPOINT, TRAIN_ALL_ENDPOINT,
-                    METROLOG_ENDPOINT, CERTIFICATES_ENDPOINT)
+                    METROLOG_ENDPOINT, CERTIFICATES_ENDPOINT,
+                    USERDATA_ENDPOINT)
 from getapi import (get_token, check_train,
                     finde_mai, finde_case,
-                    get_measurement, get_photo, get_certificates, get_file)
+                    get_measurement, get_photo, get_certificates, get_file,
+                    user_telegram)
 from utils import check_user, send_me_messege
 
 load_dotenv()
@@ -36,7 +38,10 @@ def wake_up(update, context):
     name = update.message.chat.first_name
     username = update.effective_chat.username
     logging.info(f'Пользователь {username} пытается запустить бот.')
-    check_user(update, context, USERS)
+
+    # проверка наличия пользователя
+    user_list = user_telegram(USERDATA_ENDPOINT, API_TOKEN, username)
+    check_user(update, context, user_list, chat_id)
 
     context.bot.send_message(
         chat_id=chat_id,

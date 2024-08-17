@@ -24,6 +24,16 @@ def get_token(USER_ENDPOINT, USER, PASSWORD) -> str:
     return f'Bearer {response.json().get("access")}'
 
 
+def user_telegram(MAI_USERDATA_ENDPOINT, API_TOKEN, user) -> list:
+    """Запрос наличия пользователя."""
+    response = requests.get(
+        url=MAI_USERDATA_ENDPOINT + f'{user}/',
+        headers={'Authorization': API_TOKEN},
+    )
+    check_server(response)
+    return response.json()
+
+
 def get_report(MAI_ENDPOINT, API_TOKEN, text) -> str:
     """Запрос выполненных переводов в лето или зиму."""
     response = requests.get(
@@ -131,7 +141,7 @@ def finde_mai(MAI_ENDPOINT, MAI_NEXT_ENDPOINT, API_TOKEN, text) -> requests:
                                     textchange[1],
                                     textchange[0], )
         return result_messege, reply_markup
-    
+
     result_messege: str = ''
 
     # смотрю следующую инспекцию

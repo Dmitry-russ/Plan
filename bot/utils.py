@@ -1,12 +1,16 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
 
-def check_user(update, context, USERS):
-    username = update.effective_chat.username
+def check_user(update, context, user_list, chat_id):
     name = update.message.chat.first_name
-    if username not in USERS:
-        raise ConnectionError(f'{name} привет! Пользователь не найден. '
-                              f'Доступ запрещен.')
+    text = (f'{name} привет! Пользователь не найден. '
+            f'Доступ запрещен.')
+    if not user_list:
+        context.bot.send_message(
+            chat_id=chat_id,
+            text=text
+            )
+        raise ConnectionError(text)
 
 
 def case_buttons(serial_serial, train_number, serial_slug, ):

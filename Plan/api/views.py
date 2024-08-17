@@ -6,6 +6,8 @@ from rest_framework import viewsets, filters
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from train.models import DoneMaiDate, Train, Cases, Maintenance
+from users.models import UserData
+from django.contrib.auth import get_user_model
 
 from .permissions import IsStaff
 from .serializers import (DoneMaiDateSerializer,
@@ -13,7 +15,10 @@ from .serializers import (DoneMaiDateSerializer,
                           CaseSerializer,
                           MaintenanceSerializer,
                           MeasurementSerializer,
-                          CertificateSerializer, )
+                          CertificateSerializer,
+                          TelegramSerializer, )
+
+User = get_user_model()
 
 DAYS_GORISONT = 90
 MAI_REPORT_COUNT = 4
@@ -77,15 +82,15 @@ class DoneMaiDateViewSet(viewsets.ReadOnlyModelViewSet):
             if info == '30days':
                 return (DoneMaiDate.objects.
                         filter(
-                    maintenance_date__range=[days30Date, currentDate]).
+                            maintenance_date__range=[days30Date, currentDate]).
                         order_by('-maintenance_date'))
             return (DoneMaiDate.objects.
                     filter(maintenance__type=choose_report.get(info),
                            maintenance_date__year=currentYear).
                     order_by('-maintenance_date'))
         return (DoneMaiDate.objects.
-                    filter(train__number=number, train__serial__slug=serial).
-                    order_by('-mileage')[:MAI_REPORT_COUNT])
+                filter(train__number=number, train__serial__slug=serial).
+                order_by('-mileage')[:MAI_REPORT_COUNT])
 
 
 class TrainViewSet(viewsets.ReadOnlyModelViewSet):
@@ -111,3 +116,12 @@ class CaseViewSet(viewsets.ReadOnlyModelViewSet):
 
         return (Cases.objects.
                 filter(train__serial__slug=serial, train__number=number))
+
+
+class UserDataViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = TelegramSerializer
+    permission_classes = (IsStaff,)
+
+    def get_queryset(self):
+        username = self.kwargs.get("user")
+        return (UserData.objects.filter(telegram=username))
