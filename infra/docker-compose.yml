@@ -27,6 +27,8 @@ services:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
       - static_value:/var/html/static/
       - media_value:/var/html/media/
+      - static_value_yoga:/var/html/static_yoga/
+      - media_value_yoga:/var/html/media_yoga/
 
     depends_on:
       - web
