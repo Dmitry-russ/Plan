@@ -7,11 +7,21 @@ services:
       - db_value:/var/lib/postgresql/data/
     env_file:
       - ./.env
-  web:
+
+  yoga:
+    image: dmitrypetukhov/yoga-backend:latest
+    restart: always
+    volumes:
+      - static_value_yoga:/app/Yoga/static/
+      - media_value_yoga:/app/Yoga/media/
+    depends_on:
+      - db
+
+  plan:
     image: dmitrypetukhov/plan:v1
     restart: always
     volumes:
-      - static_value:/app/Plan/static/
+      - static_value_plan:/app/Plan/static/
       - media_value:/app/Plan/media/
     depends_on:
       - db
@@ -21,7 +31,8 @@ services:
   nginx:
     image: nginx:1.21.3-alpine
     ports:
-      - "80:80"
+      - "127.0.0.1:80:80"
+      - "127.0.0.1:8080:8080"
 
     volumes:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
@@ -29,10 +40,14 @@ services:
       - media_value:/var/html/media/
 
     depends_on:
-      - web
+      - yoga
+      - plan
     restart: always
 
 volumes:
   static_value:
   media_value:
+  static_value_plan:
+  static_value_yoga:
+  media_value_yoga: 
   db_value:
