@@ -21,7 +21,9 @@ jobs:
           cd ..
           cd ${{ secrets.PROJECT_FOLDER }}
           git pull
+          cd infra
           sudo docker-compose down
+          cd ..
           sudo docker build -t dmitrypetukhov/plan:v1 .
           sudo docker push dmitrypetukhov/plan:v1
           cd infra
