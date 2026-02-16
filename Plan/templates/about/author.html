@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1> {{ user.first_name }} {{ user.last_name }}  привет! тест:)</h1>
+    <h1> {{ user.first_name }} {{ user.last_name }}  привет!</h1>
     <p>
         <a type="button" class="btn btn-light" {% if view_name  == 'users:password_change' %}active{% endif %}"
         href="{% url 'users:password_change' %}">Изменить
