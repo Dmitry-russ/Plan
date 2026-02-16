@@ -22,6 +22,7 @@ jobs:
           cd ${{ secrets.PROJECT_FOLDER }}
           git checkout main
           git pull origin main
+          cd infra
           docker-compose down
           docker-compose up --build -d
           EOF
