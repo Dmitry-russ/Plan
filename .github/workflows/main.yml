@@ -25,7 +25,6 @@ jobs:
           sudo docker-compose down
           cd ..
           sudo docker build -t dmitrypetukhov/plan:v1 .
-          sudo docker push dmitrypetukhov/plan:v1
           cd infra
           sudo docker-compose up --build -d
           EOF
