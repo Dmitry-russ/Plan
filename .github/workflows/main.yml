@@ -18,8 +18,8 @@ jobs:
       - name: connect, pull and run
         run: |
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-          # cd ${{ secrets.PROJECT_FOLDER }}
-          cd home/Plan/
+          cd ..
+          cd ${{ secrets.PROJECT_FOLDER }}
           git checkout main
           git pull origin main
           docker-compose down
